@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrowDo", "CrowDo\CrowDo.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrowDoTesting", "CrowDoTesting\CrowDoTesting.csproj", "{D8BD68E5-FD3C-4B21-BEBF-C80F86ECEA23}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrowDoApi", "CrowDoApi\CrowDoApi.csproj", "{826891D4-BFBC-4C94-B334-F3C4C280C194}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrowDoTest", "CrowDoTest\CrowDoTest.csproj", "{C0332EC5-E62B-401D-9F3C-9447B863681A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{D8BD68E5-FD3C-4B21-BEBF-C80F86ECEA23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8BD68E5-FD3C-4B21-BEBF-C80F86ECEA23}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8BD68E5-FD3C-4B21-BEBF-C80F86ECEA23}.Release|Any CPU.Build.0 = Release|Any CPU
+		{826891D4-BFBC-4C94-B334-F3C4C280C194}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{826891D4-BFBC-4C94-B334-F3C4C280C194}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{826891D4-BFBC-4C94-B334-F3C4C280C194}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{826891D4-BFBC-4C94-B334-F3C4C280C194}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0332EC5-E62B-401D-9F3C-9447B863681A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0332EC5-E62B-401D-9F3C-9447B863681A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0332EC5-E62B-401D-9F3C-9447B863681A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0332EC5-E62B-401D-9F3C-9447B863681A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
