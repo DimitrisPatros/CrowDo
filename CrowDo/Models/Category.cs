@@ -1,4 +1,6 @@
-﻿namespace CrowDo.Models
+﻿using System.Collections.Generic;
+
+namespace CrowDo.Models
 {
     public class Category
     {

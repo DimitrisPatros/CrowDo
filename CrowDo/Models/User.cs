@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace CrowDo.Models
@@ -16,6 +17,5 @@ namespace CrowDo.Models
         public string ZipCode { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool IsActive { get; set; }
-        public List<Pledges> Pledges { get; set; }
     }
 }

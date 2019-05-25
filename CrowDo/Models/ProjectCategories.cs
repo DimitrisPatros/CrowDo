@@ -1,4 +1,6 @@
-﻿namespace CrowDo.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CrowDo.Models
 {
     public class ProjectCategories
     {

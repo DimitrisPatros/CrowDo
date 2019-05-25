@@ -4,14 +4,16 @@ using CrowDo;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CrowDoTesting.Migrations
 {
     [DbContext(typeof(CrowDoDbContext))]
-    partial class CrowDoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190525184441_dbcreate1152")]
+    partial class dbcreate1152
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

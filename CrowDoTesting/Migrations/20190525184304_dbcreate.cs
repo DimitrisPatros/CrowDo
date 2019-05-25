@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CrowDoTesting.Migrations
 {
-    public partial class sactive2 : Migration
+    public partial class dbcreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,6 +32,8 @@ namespace CrowDoTesting.Migrations
                     PledgeOfFunding = table.Column<double>(nullable: false),
                     PledgeProgress = table.Column<double>(nullable: false),
                     ProjectStatus = table.Column<bool>(nullable: false),
+                    ProjectSuccess = table.Column<bool>(nullable: false),
+                    ProjectViews = table.Column<int>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
@@ -71,8 +73,8 @@ namespace CrowDoTesting.Migrations
                     NumberOfBacker = table.Column<int>(nullable: false),
                     PriceOfPlege = table.Column<double>(nullable: false),
                     EstimateDelivery = table.Column<DateTime>(nullable: false),
-                    Duration = table.Column<DateTime>(nullable: false),
-                    NumberOfAvailablePledge = table.Column<int>(nullable: false),
+                    DurationOfPledge = table.Column<DateTime>(nullable: false),
+                    NumberOfAvailablePledges = table.Column<int>(nullable: false),
                     Description = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -212,6 +214,13 @@ namespace CrowDoTesting.Migrations
                 name: "IX_ProjectInfo_ProjectId",
                 table: "ProjectInfo",
                 column: "ProjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_User_Email",
+                table: "User",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

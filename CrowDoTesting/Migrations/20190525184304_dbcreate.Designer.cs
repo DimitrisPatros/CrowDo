@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CrowDoTesting.Migrations
 {
     [DbContext(typeof(CrowDoDbContext))]
-    [Migration("20190525134052_sactive2")]
-    partial class sactive2
+    [Migration("20190525184304_dbcreate")]
+    partial class dbcreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,7 +36,7 @@ namespace CrowDoTesting.Migrations
                     b.ToTable("Category");
                 });
 
-            modelBuilder.Entity("CrowDo.Models.Comments", b =>
+            modelBuilder.Entity("CrowDo.Models.Comment", b =>
                 {
                     b.Property<int>("ProjectId");
 
@@ -61,11 +61,11 @@ namespace CrowDoTesting.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<DateTime>("Duration");
+                    b.Property<DateTime>("DurationOfPledge");
 
                     b.Property<DateTime>("EstimateDelivery");
 
-                    b.Property<int>("NumberOfAvailablePledge");
+                    b.Property<int>("NumberOfAvailablePledges");
 
                     b.Property<int>("NumberOfBacker");
 
@@ -112,6 +112,10 @@ namespace CrowDoTesting.Migrations
                     b.Property<double>("PledgeProgress");
 
                     b.Property<bool>("ProjectStatus");
+
+                    b.Property<bool>("ProjectSuccess");
+
+                    b.Property<int>("ProjectViews");
 
                     b.Property<int>("UserId");
 
@@ -180,13 +184,17 @@ namespace CrowDoTesting.Migrations
 
                     b.HasKey("UserId");
 
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
+
                     b.ToTable("User");
                 });
 
-            modelBuilder.Entity("CrowDo.Models.Comments", b =>
+            modelBuilder.Entity("CrowDo.Models.Comment", b =>
                 {
                     b.HasOne("CrowDo.Models.Project", "Project")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -207,11 +215,11 @@ namespace CrowDoTesting.Migrations
             modelBuilder.Entity("CrowDo.Models.Pledges", b =>
                 {
                     b.HasOne("CrowDo.Models.PledgeOptions", "PledgeOptions")
-                        .WithMany("Pledges")
+                        .WithMany()
                         .HasForeignKey("PledgeOptionsId");
 
                     b.HasOne("CrowDo.Models.User", "User")
-                        .WithMany("Pledges")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -224,7 +232,7 @@ namespace CrowDoTesting.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CrowDo.Models.Project", "Project")
-                        .WithMany("ProjectCategories")
+                        .WithMany()
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
