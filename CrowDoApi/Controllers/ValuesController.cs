@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CrowDo.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CrowDoApi.Controllers
@@ -25,9 +26,10 @@ namespace CrowDoApi.Controllers
         }
 
         // POST api/values
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("/register")]
+        public void RegisterNewUser([FromBody] User user)
         {
+            servise.retsgapijoadg=(user.Address,user.DateOfBirth)
         }
 
         // PUT api/values/5
