@@ -637,29 +637,182 @@ namespace CrowDoCore.Services
             return resultList;
         }
 
-
-
-        public Result<bool> UpdateCategoryOfProject(string email, int ProjectId, string CategoryName, string NewCategoryName)
+        //done
+        public Result<bool> UpdatePledgeOptionOfProject(string email, int projectId, int pledgeOptionsId, string titleOfPledge, double priceOfPledge, DateTime estimateDelivery, DateTime durationOfPldege, int numberOfAvailablePledges, string description)
         {
-            throw new NotImplementedException();
+
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //chek if the projcet exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+
+            //cheking if the project has already this pledge option
+            var projectPledgeOptions = context.Set<PledgeOptions>().Where(po => po.ProjectId == projectId).ToList();
+            var pledgeOption = projectPledgeOptions.SingleOrDefault(pc => pc.TitleOfPledge == titleOfPledge);
+            if (pledgeOption==null)
+            {
+                resultbool.ErrorCode = 12;
+                resultbool.ErrorText = "no pledge option with this id";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            pledgeOption.TitleOfPledge = titleOfPledge;
+            pledgeOption.PriceOfPlege = priceOfPledge;
+            pledgeOption.NumberOfAvailablePledges = numberOfAvailablePledges;
+            pledgeOption.EstimateDelivery = estimateDelivery;
+            pledgeOption.DurationOfPledge = durationOfPldege;
+            pledgeOption.Description = description;
+
+            context.SaveChanges();
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
-        public Result<bool> UpdatePledgeOptionOfProject(string email, int ProjectId, int pledgeOptionsId, string titleOfPledge, double priceOfPledge, DateTime estimateDelivery, DateTime durationOfPldege, int numberOfAvailablePledges, string description)
+        //done
+        public Result<bool> UpdateProject(string email, int projectId,string title, double fundingBudjet)
         {
-            throw new NotImplementedException();
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //chek if the projcet exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
+            project.PledgeOfFunding = fundingBudjet;
+            if (context.Set<Project>().Any(p => p.ProjectTitle == title))
+            {
+                resultbool.ErrorCode = 9;
+                resultbool.ErrorText = "already project with this name";
+                resultbool.Data = false;
+                return resultbool;
+            }
+            project.ProjectTitle = title;
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
-        public Result<bool> UpdateProject(string email, int projectId, double fundingBudjet)
+        //done
+        public Result<bool> UpdateProjectInfo(string email, int projectinfoId, string title, string description, string filePath)
         {
-            throw new NotImplementedException();
-        }
 
-        public Result<bool> UpdateProjectInfo(string email, int ProjectinfoId, string title, string description, string filePath)
-        {
-            throw new NotImplementedException();
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+            var projectInfo = context.Set<ProjectInfo>().SingleOrDefault(pi => pi.ProjectInfoId == projectinfoId);
+            //chek if the projcet exist
+            if (!IfProjectExist(projectInfo.ProjectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectInfo.ProjectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            projectInfo.Title = title;
+            projectInfo.Description = description;
+            projectInfo.FileName = filePath;
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
     }
 }
+
+
 ////this method can be used to save a collum in the project table
 //public Result<bool> AutoProjectProgressUpdate()
 //{

@@ -10,7 +10,7 @@ namespace CrowDoCore.Interfaces
         //Project Create Update Delete
         Result<bool> CreateProject(string email,string projectTitle,double fundingBudjet);
         Result<bool> DeleteProject(string email, int projectId);
-        Result<bool> UpdateProject(string email,int projectId, double fundingBudjet);
+        Result<bool> UpdateProject(string email,int projectId,string title, double fundingBudjet);
         Result<bool> ProgressOfFunding( int projectId);
 
         //Projectinfo Create Update Delete
@@ -21,7 +21,6 @@ namespace CrowDoCore.Interfaces
         //ProjectCategories Create Update Delete
         Result<bool> AddCategoryToProject(string email, int ProjectId, string CategoryName);
         Result<bool> DeleteCategoryFromProject(string email, int ProjectId, string CategoryName);
-        Result<bool> UpdateCategoryOfProject(string email, int ProjectId, string CategoryName,string NewCategoryName);
 
         //PledgeOptions Create Update Delete
         Result<bool> AddPledgeOptionToProject(string email, int ProjectId, string titleOfPledge,
@@ -34,7 +33,5 @@ namespace CrowDoCore.Interfaces
 
         Result<List<Comment>> ProjectComments(int projectId);
         Result<bool> AutoProjectStatusUpdate();
-        //Result<bool> AutoProjectProgressUpdate();
-        //Result<List<Project>> SuccessfullProjects();
     }
 }
