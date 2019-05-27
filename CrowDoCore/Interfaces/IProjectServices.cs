@@ -8,10 +8,10 @@ namespace CrowDoCore.Interfaces
     public interface IProjectServices
     {
         //Project Create Update Delete
-        Result<bool> CreateProject(string email,double fundingBudjet);
+        Result<bool> CreateProject(string email,string projectTitle,double fundingBudjet);
         Result<bool> DeleteProject(string email, int projectId);
         Result<bool> UpdateProject(string email,int projectId, double fundingBudjet);
-        Result<double> ProgressOfFunding(string email, int projectId);
+        Result<bool> ProgressOfFunding( int projectId);
 
         //Projectinfo Create Update Delete
         Result<bool> AddProjectInfo(string email, int ProjectId,string title,string description,string filePath);
@@ -34,7 +34,7 @@ namespace CrowDoCore.Interfaces
 
         Result<List<Comment>> ProjectComments(int projectId);
         Result<bool> AutoProjectStatusUpdate();
-        Result<bool> AutoProjectProgressUpdate();
-        Result<List<Project>> SuccessfullProjects();
+        //Result<bool> AutoProjectProgressUpdate();
+        //Result<List<Project>> SuccessfullProjects();
     }
 }

@@ -19,6 +19,7 @@ namespace CrowDoCore.Services
         //}
         public CrowDoDbContext context = new CrowDoDbContext();
         public Result<bool> resultbool = new Result<bool>();
+        public Result<List<Comment>> resultList = new Result<List<Comment>>();
 
         public ProjectServices()
         {
@@ -54,6 +55,15 @@ namespace CrowDoCore.Services
             }
             return false;
         }
+        public bool IfProjectExist(int projectId)
+        {
+            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
+            if (project == null)
+            {
+                return false;
+            }
+            return true;
+        }
 
         //done
         public Result<bool> AddCategoryToProject(string email, int projectId, string categoryName)
@@ -67,8 +77,8 @@ namespace CrowDoCore.Services
                 return resultbool;
             }
 
-            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
-            if (project == null)
+            //chek if the projce exist
+            if (!IfProjectExist(projectId))
             {
                 resultbool.ErrorCode = 8;
                 resultbool.ErrorText = "projet doesn’t exist";
@@ -111,9 +121,8 @@ namespace CrowDoCore.Services
                 return resultbool;
             }
 
-
             //create the projectcategory
-            
+            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
             var newProjectCategory = new ProjectCategories();
             newProjectCategory.Project = project;
             newProjectCategory.ProjectId = project.ProjectId;
@@ -136,7 +145,7 @@ namespace CrowDoCore.Services
             }
         }
 
-
+        //done
         public Result<bool> AddPledgeOptionToProject(string email, int projectId,
             string titleOfPledge, double priceOfPledge, DateTime estimateDelivery,
             DateTime durationOfPldege, int numberOfAvailablePledges, string description)
@@ -150,6 +159,15 @@ namespace CrowDoCore.Services
                 return resultbool;
             }
 
+            //chek if the projcet exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
             //cheking if the specific user can modify this projet
             if (!IsValidateUser(email, projectId))
             {
@@ -159,9 +177,10 @@ namespace CrowDoCore.Services
                 return resultbool;
             }
 
+
             //cheking if the project has already this pledge option
-            if (context.Set<PledgeOptions>().Any(po => po.TitleOfPledge == titleOfPledge)
-                && context.Set<PledgeOptions>().Any(p => p.ProjectId == projectId))
+            var projectPledgeOptions = context.Set<PledgeOptions>().Where(po => po.ProjectId == projectId).ToList();
+            if (projectPledgeOptions.Any(pc => pc.TitleOfPledge == titleOfPledge))
             {
                 resultbool.ErrorCode = 2;
                 resultbool.ErrorText = "this pledge option is already in this project";
@@ -198,8 +217,9 @@ namespace CrowDoCore.Services
             }
         }
 
-
-        public Result<bool> AddProjectInfo(string email, int projectId, string title, string description, string fileName)
+        //done
+        public Result<bool> AddProjectInfo(string email, int projectId,
+                      string title, string description, string fileName)
         {
 
             //cheking if the email is valid
@@ -207,6 +227,15 @@ namespace CrowDoCore.Services
             {
                 resultbool.ErrorCode = 1;
                 resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //chek if the projcet exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
                 resultbool.Data = false;
                 return resultbool;
             }
@@ -223,6 +252,16 @@ namespace CrowDoCore.Services
             //cheking if the project has already this project info
             if (context.Set<ProjectInfo>().Any(pi => pi.Title == title)
                 && context.Set<ProjectInfo>().Any(pi => pi.ProjectId == projectId))
+            {
+                resultbool.ErrorCode = 2;
+                resultbool.ErrorText = "this project info is already in this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the project has already this pledge option
+            var InfoOptions = context.Set<ProjectInfo>().Where(pi => pi.ProjectId == projectId).ToList();
+            if (InfoOptions.Any(pc => pc.Title == title))
             {
                 resultbool.ErrorCode = 2;
                 resultbool.ErrorText = "this project info is already in this project";
@@ -255,56 +294,350 @@ namespace CrowDoCore.Services
             }
         }
 
-
-        public Result<bool> AutoProjectProgressUpdate()
-        {
-            throw new NotImplementedException();
-        }
-
+        //done
         public Result<bool> AutoProjectStatusUpdate()
         {
-            throw new NotImplementedException();
+            var projectList = context.Set<Project>().Where(pl => pl.CreationDate.AddDays(30) < DateTime.Today).ToList();
+
+            foreach (var p in projectList)
+            {
+                p.ProjectStatus = false;
+            }
+            if (context.SaveChanges() >= projectList.Count())
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
-        public Result<bool> CreateProject(string email, double fundingBudjet)
+        //done
+        public Result<bool> CreateProject(string email, string projectTitle, double fundingBudjet)
         {
-            throw new NotImplementedException();
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //chek if the projcet title exist
+            if (context.Set<Project>().Any(p => p.ProjectTitle == projectTitle))
+            {
+                resultbool.ErrorCode = 9;
+                resultbool.ErrorText = "already project with this name";
+                resultbool.Data = false;
+                return resultbool;
+            }
+            //chek if the user exist
+            var user = context.Set<User>().SingleOrDefault(u => u.Email == email);
+            if (user == null)
+            {
+                resultbool.ErrorCode = 10;
+                resultbool.ErrorText = "user didnt exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            var project = new Project();
+            project.UserId = user.UserId;
+            project.ProjectTitle = projectTitle;
+            project.PledgeOfFunding = fundingBudjet;
+            context.Add(project);
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
-        public Result<bool> DeleteCategoryFromProject(string email, int ProjectId, string CategoryName)
+        //done
+        public Result<bool> DeleteCategoryFromProject(string email, int projectId, string categoryName)
         {
-            throw new NotImplementedException();
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //chek if the projce exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the project has this category
+            var projectCategory = context.Set<ProjectCategories>().Where(p => p.ProjectId == projectId).ToList();
+            if (!projectCategory.Any(pc => pc.Category.CategoryName == categoryName))
+            {
+                resultbool.ErrorCode = 11;
+                resultbool.ErrorText = "category doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            context.Remove(projectCategory.SingleOrDefault(pc => pc.Category.CategoryName == categoryName));
+
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
-        public Result<bool> DeletePledgeOptionFromProject(string email, int ProjectId, int pledgeOptionsId)
+        //done
+        public Result<bool> DeletePledgeOptionFromProject(string email, int projectId, int pledgeOptionsId)
         {
-            throw new NotImplementedException();
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //chek if the projcet exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //check if the pledge exist
+            var pledge = context.Set<PledgeOptions>().SingleOrDefault(po => po.PledgeOptionsId == pledgeOptionsId);
+            if(pledge==null)
+            {
+                resultbool.ErrorCode = 12;
+                resultbool.ErrorText = "pledge doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            context.Remove(pledge);
+
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
+        //done
         public Result<bool> DeleteProject(string email, int projectId)
         {
-            throw new NotImplementedException();
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //chek if the projcet exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId==projectId);
+            project.ProjectStatus = false;
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
+        //done
         public Result<bool> DeleteProjectInfo(string email, int projectinfoId)
         {
-            throw new NotImplementedException();
+
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                resultbool.Data = false;
+                return resultbool;
+            }
+            var projectInfo = context.Set<ProjectInfo>().SingleOrDefault(pi => pi.ProjectInfoId == projectinfoId);
+            //chek if the projcet exist
+            if (!IfProjectExist(projectInfo.ProjectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectInfo.ProjectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
+            context.Remove(projectInfo);
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
-        public Result<double> ProgressOfFunding(string email, int projectId)
+        //done
+        public Result<bool> ProgressOfFunding( int projectId)
         {
-            throw new NotImplementedException();
+            //chek if the projcet exist
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet doesn’t exist";
+                resultbool.Data = false;
+                return resultbool;
+            }
+            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
+
+            if(project.PledgeProgress>=project.PledgeOfFunding)
+            {
+                project.ProjectSuccess = true;
+            }
+            if (context.SaveChanges() >= 1)
+            {
+                resultbool.ErrorCode = 0;
+                resultbool.ErrorText = "Successfull";
+                resultbool.Data = true;
+                return resultbool;
+            }
+            else
+            {
+                resultbool.ErrorCode = 4;
+                resultbool.ErrorText = "couldnt save in db";
+                resultbool.Data = false;
+                return resultbool;
+            }
         }
 
+        //done
         public Result<List<Comment>> ProjectComments(int projectId)
         {
-            throw new NotImplementedException();
+            if (!IfProjectExist(projectId))
+            {
+                resultList.ErrorCode = 8;
+                resultList.ErrorText = "projet doesn’t exist";                
+                return resultList;
+            }
+            var commentList = context.Set<Comment>().Where(c => c.ProjectId == projectId).ToList();
+            if(commentList ==null)
+            {
+                resultList.ErrorCode = 13;
+                resultList.ErrorText = "no comment";
+                return resultList;
+            }
+            resultList.ErrorCode = 0;
+            resultList.ErrorText = "successfull";
+            resultList.Data = commentList;
+            return resultList;
         }
 
-        public Result<List<Project>> SuccessfullProjects()
-        {
-            throw new NotImplementedException();
-        }
+
 
         public Result<bool> UpdateCategoryOfProject(string email, int ProjectId, string CategoryName, string NewCategoryName)
         {
@@ -327,3 +660,33 @@ namespace CrowDoCore.Services
         }
     }
 }
+////this method can be used to save a collum in the project table
+//public Result<bool> AutoProjectProgressUpdate()
+//{
+//    var projectList = context.Set<Project>().Where(pl => pl.ProjectStatus==true).ToList();
+//    //run for all the active project
+//    foreach (var p in projectList)
+//    {
+//        //bring a list with all pledge option of this project
+//        var pledgeOptionCount = context.Set<PledgeOptions>().Where(po => po.ProjectId == p.ProjectId).ToList();
+
+//        foreach (var po in pledgeOptionCount)
+//        {
+//            p.PledgeProgress += po.PriceOfPlege * po.NumberOfBacker;
+//        }
+//    }
+//    if (context.SaveChanges() >= projectList.Count())
+//    {
+//        resultbool.ErrorCode = 0;
+//        resultbool.ErrorText = "Successfull";
+//        resultbool.Data = true;
+//        return resultbool;
+//    }
+//    else
+//    {
+//        resultbool.ErrorCode = 4;
+//        resultbool.ErrorText = "couldnt save in db";
+//        resultbool.Data = false;
+//        return resultbool;
+//    }
+//}

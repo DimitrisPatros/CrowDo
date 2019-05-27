@@ -18,7 +18,7 @@ namespace CrowDoCore.Interfaces
         Result<List<Project>> LastMonthProjects();
         Result<List<Project>> ProjectByCategory(string categoryName);
         Result<List<Project>> ProjectByCreator(string creatorName);
-        Result<List<Project>> MpstFunder();
+        Result<List<Project>> MostFunded();
         Result<List<Project>> AlmostExpireProjects();
     }
 }
