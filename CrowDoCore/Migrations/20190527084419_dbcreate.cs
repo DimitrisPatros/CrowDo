@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CrowDoTesting.Migrations
+namespace CrowDoCore.Migrations
 {
     public partial class dbcreate : Migration
     {
@@ -121,7 +121,7 @@ namespace CrowDoTesting.Migrations
                     ProjectId = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    MemoryPath = table.Column<string>(nullable: true)
+                    FileName = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

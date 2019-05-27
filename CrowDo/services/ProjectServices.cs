@@ -8,15 +8,23 @@ using System.Text;
 
 namespace CrowDo.services
 {
-    class ProjectServices : IProjectServices
+    public class ProjectServices : IProjectServices
     {
-        private CrowDoDbContext _context;
-        private Result<bool> _resultbool;
-        public ProjectServices(CrowDoDbContext crowDoDbContext, Result<bool> result)
+        //private CrowDoDbContext _context;
+        //private Result<bool> _resultbool;
+        //public ProjectServices(CrowDoDbContext crowDoDbContext, Result<bool> result)
+        //{
+        //    _context = crowDoDbContext;
+        //    _resultbool = result;
+        //}
+
+        public ProjectServices()
         {
-            _context = crowDoDbContext;
-            _resultbool = result;
         }
+        private CrowDoDbContext _context = new CrowDoDbContext();
+        private Result<bool> _resultbool = new Result<bool>();
+
+
         public bool IsvalidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -32,7 +40,7 @@ namespace CrowDo.services
         public bool IsValidateUser(string email, int projectId)
         {
             var user = _context.Set<User>().SingleOrDefault(u => u.Email == email);
-            var project = _context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
+            Project project = _context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
             if (user.UserId == project.UserId)
             {
                 return true;
@@ -177,12 +185,63 @@ namespace CrowDo.services
             }
         }
 
-
-
-        public Result<bool> AddProjectInfo(string email, int ProjectId, string title, string description, string filePath)
+        //done
+        public Result<bool> AddProjectInfo(string email, int projectId, string title, string description, string fileName)
         {
-            throw new NotImplementedException();
+
+            //cheking if the email is valid
+            if (!IsvalidEmail(email))
+            {
+                _resultbool.ErrorCode = 1;
+                _resultbool.ErrorText = "not valid email";
+                _resultbool.Data = false;
+                return _resultbool;
+            }
+
+            //cheking if the specific user can modify this projet
+            if (!IsValidateUser(email, projectId))
+            {
+                _resultbool.ErrorCode = 3;
+                _resultbool.ErrorText = "This user can't modify this project";
+                _resultbool.Data = false;
+                return _resultbool;
+            }
+
+            //cheking if the project has already this project info
+            if (_context.Set<ProjectInfo>().Any(pi => pi.Title == title)
+                && _context.Set<ProjectInfo>().Any(pi => pi.ProjectId == projectId))
+            {
+                _resultbool.ErrorCode = 2;
+                _resultbool.ErrorText = "this project info is already in this project";
+                _resultbool.Data = false;
+                return _resultbool;
+            }
+
+            //create new pledge option
+            var newProjectInfo = new ProjectInfo();
+            newProjectInfo.Title= title;
+            newProjectInfo.ProjectId = projectId;
+            newProjectInfo.Description= description;
+            newProjectInfo.FileName = fileName;
+
+            _context.Add(newProjectInfo);
+            _context.SaveChanges();
+            if (_context.SaveChanges() >= 1)
+            {
+                _resultbool.ErrorCode = 0;
+                _resultbool.ErrorText = "Successfull";
+                _resultbool.Data = true;
+                return _resultbool;
+            }
+            else
+            {
+                _resultbool.ErrorCode = 4;
+                _resultbool.ErrorText = "couldnt save in db";
+                _resultbool.Data = false;
+                return _resultbool;
+            }
         }
+
 
         public Result<bool> AutoProjectProgressUpdate()
         {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using CrowDo.Models;
+using CrowDoCore.Models;
 
-namespace CrowDo
+namespace CrowDoCore
 {
     public class CrowDoDbContext : DbContext
     {
@@ -14,7 +14,7 @@ namespace CrowDo
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseSqlServer(@"Server=localhost;Database=CrowDoDbfinal; Trusted_Connection = True; ConnectRetryCount = 0;");
+                .UseSqlServer(@"Server=localhost;Database=CrowDoDb; Trusted_Connection = True; ConnectRetryCount = 0;");
         }
 
         public DbSet<Category> Category { get; set; }
