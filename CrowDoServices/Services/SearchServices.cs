@@ -1,5 +1,6 @@
 ﻿using CrowDoServices.Interfaces;
 using CrowDoServices.Models;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -141,7 +142,8 @@ namespace CrowDoServices.Services
 
             var result = new Result<List<Project>>();
             var lastweekproject = context.Set<Project>()
-                .Where(w => w.CreationDate.AddDays(7) >= DateTime.Today);
+                .Where(w => w.CreationDate.AddDays(7) >= DateTime.Today)
+                .ToList();
 
             if (lastweekproject == null)
             {
@@ -149,7 +151,7 @@ namespace CrowDoServices.Services
                 result.ErrorText = "Last week project not found";
 
                 return result;
-            }
+            }         
 
             return result;
         }
