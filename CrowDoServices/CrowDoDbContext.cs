@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
-using CrowDo.Models;
+using CrowDoServices.Models;
 
-namespace CrowDo
+namespace CrowDoServices
 {
     public class CrowDoDbContext : DbContext
     {
-        //public CrowDoDbContext(DbContextOptions options) : base(options)//erwtisi
-        //{
-        //}
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public CrowDoDbContext(DbContextOptions<CrowDoDbContext> options)
+           : base(options)
         {
-            optionsBuilder
-                .UseSqlServer(@"Server=localhost;Database=CrowDoDb; Trusted_Connection = True; ConnectRetryCount = 0;");
+
+        }
+        public CrowDoDbContext()
+        {
         }
 
         public DbSet<Category> Category { get; set; }
@@ -27,6 +27,7 @@ namespace CrowDo
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
             modelBuilder.Entity<Comment>().HasKey(c => new { c.ProjectId, c.UserId });
             modelBuilder.Entity<Pledges>().HasKey(p => new { p.PledgeOptionId, p.UserId });
@@ -35,6 +36,7 @@ namespace CrowDo
     }
 
 }
+
 //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //{
 //    optionsBuilder

@@ -4,12 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 
-namespace CrowDo.Models
+namespace CrowDoServices.Models
 {
     public class Project
     {
         public int ProjectId { get; set; }
         public int UserId { get; set; }
+        public string ProjectTitle { get; set; }
         public double PledgeOfFunding { get; set; }//name change
         public double PledgeProgress { get; set; }
         public bool ProjectStatus { get; set; }

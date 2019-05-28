@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CrowDo.Models
+namespace CrowDoServices.Models
 {
     public class ProjectCategories
     {

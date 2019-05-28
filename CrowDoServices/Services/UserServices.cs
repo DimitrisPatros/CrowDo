@@ -1,21 +1,21 @@
-﻿using CrowDoCore.Interfaces;
-using CrowDoCore.Models;
+﻿using CrowDoServices.Interfaces;
+using CrowDoServices.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CrowDoCore.Services
+namespace CrowDoServices.Services
 {
     public class UserServices : IUserServices
-
     {
-        public CrowDoDbContext context = new CrowDoDbContext();
+        public CrowDoDbContext context;
         public Result<bool> resultbool = new Result<bool>();
         public Result<User> resultUser = new Result<User>();
 
-        public UserServices()
+        public UserServices(CrowDoDbContext contexts)
         {
+            context = contexts;
         }
         public bool IsvalidEmail(string email)
         {
@@ -95,13 +95,15 @@ namespace CrowDoCore.Services
         //done
         public Result<User> UserRegister(string email, string name, string surname, string address, string country, string state, string zipcode, DateTime dateofbirth)
         {
+            //check if the email is valid
             if (!IsvalidEmail(email))
             {
                 this.resultUser.ErrorCode = 1;
-                this.resultUser.ErrorText = "not valid email";                
+                this.resultUser.ErrorText = "not valid email";
                 return this.resultUser;
             }
 
+            //check if there is a name 
             if (string.IsNullOrWhiteSpace(name))
             {
                 resultUser.ErrorCode = 5;
@@ -109,6 +111,7 @@ namespace CrowDoCore.Services
                 return resultUser;
             }
 
+            //check if the user is over 18 years old
             if (dateofbirth.AddYears(18) > DateTime.Now)
             {
                 resultUser.ErrorCode = 6;
@@ -116,6 +119,7 @@ namespace CrowDoCore.Services
                 return resultUser;
             }
 
+            //check if the user with this email already exist
             if (context.Set<User>().Any(e => e.Email == email))
             {
                 resultUser.ErrorCode = 5;
@@ -123,19 +127,16 @@ namespace CrowDoCore.Services
                 return resultUser;
             }
 
-            User user = new User()
-            {
-                Name = name,
-                Surname = surname,
-                Email = email,
-                DateOfBirth = dateofbirth,
-                Address = address,
-                Country = country,
-                State = state,
-                ZipCode = zipcode,
-                IsActive = true
-                
-            };
+            User user = new User();
+            user.Name = name;
+            user.Surname = surname;
+            user.Email = email;
+            user.DateOfBirth = dateofbirth;
+            user.Address = address;
+            user.Country = country;
+            user.State = state;
+            user.ZipCode = zipcode;
+            user.IsActive = true;
             context.Add(user);
             if (context.SaveChanges() >= 1)
             {

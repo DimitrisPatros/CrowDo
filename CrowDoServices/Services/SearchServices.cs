@@ -1,13 +1,19 @@
-﻿using CrowDoCore.Interfaces;
-using CrowDoCore.Models;
+﻿using CrowDoServices.Interfaces;
+using CrowDoServices.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CrowDoCore.Services
+namespace CrowDoServices.Services
 {
+
     public class SearchServices : ISearchServices
     {
+        public CrowDoDbContext context;
+        public SearchServices(CrowDoDbContext contexts)
+        {
+            context = contexts;
+        }
         public Result<List<Project>> AlmostExpireProjects()
         {
             throw new NotImplementedException();

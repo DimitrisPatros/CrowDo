@@ -1,11 +1,11 @@
-﻿using CrowDo.Models;
+﻿using CrowDoServices.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CrowDo.Interfaces
+namespace CrowDoServices.Interfaces
 {
-    interface ISearchServices
+    public interface ISearchServices
     {
         Result<Project> SearchPoject(string title);
         Result<List<Project>> AvailableProjects();
@@ -18,7 +18,7 @@ namespace CrowDo.Interfaces
         Result<List<Project>> LastMonthProjects();
         Result<List<Project>> ProjectByCategory(string categoryName);
         Result<List<Project>> ProjectByCreator(string creatorName);
-        Result<List<Project>> MpstFunder();
+        Result<List<Project>> MostFunded();
         Result<List<Project>> AlmostExpireProjects();
     }
 }
