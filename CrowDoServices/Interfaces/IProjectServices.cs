@@ -10,7 +10,7 @@ namespace CrowDoServices.Interfaces
         //Project Create Update Delete
         Result<bool> CreateProject(string email,string projectTitle,double fundingBudjet);
         Result<bool> DeleteProject(string email, int projectId);
-        Result<bool> UpdateProject(string email,int projectId,string title, double fundingBudjet);
+        Result<bool> UpdateProject(string email,int projectId,string title,bool status);
         Result<bool> ProgressOfFunding( int projectId);
 
         //Projectinfo Create Update Delete
@@ -31,7 +31,7 @@ namespace CrowDoServices.Interfaces
                              string titleOfPledge, double priceOfPledge,DateTime estimateDelivery,
                              DateTime durationOfPldege,int numberOfAvailablePledges,string description);
 
-        Result<List<Comment>> ProjectComments(int projectId);
+        Result<List<string>> ProjectComments(int projectId);
         Result<bool> AutoProjectStatusUpdate();
     }
 }

@@ -19,7 +19,7 @@ namespace CrowDoServices.Services
         }
 
         public Result<bool> resultbool = new Result<bool>();
-        public Result<List<Comment>> resultList = new Result<List<Comment>>();
+        public Result<List<string>> resultList = new Result<List<string>>();
 
         public bool IsvalidEmail(string email)
         {
@@ -314,7 +314,7 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
         }
-
+ 
         //done
         public Result<bool> CreateProject(string email, string projectTitle, double fundingBudjet)
         {
@@ -349,6 +349,8 @@ namespace CrowDoServices.Services
             project.UserId = user.UserId;
             project.ProjectTitle = projectTitle;
             project.PledgeOfFunding = fundingBudjet;
+            project.ProjectStatus = true;
+            project.CreationDate = DateTime.Now;
             context.Add(project);
             if (context.SaveChanges() >= 1)
             {
@@ -590,11 +592,20 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
             var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
+            if(project.ProjectStatus==false)
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projet is inactive";
+                resultbool.Data = false;
+                return resultbool;
+            }
+
 
             if (project.PledgeProgress >= project.PledgeOfFunding)
             {
                 project.ProjectSuccess = true;
             }
+            project.ProjectSuccess = false;
             if (context.SaveChanges() >= 1)
             {
                 resultbool.ErrorCode = 0;
@@ -612,7 +623,7 @@ namespace CrowDoServices.Services
         }
 
         //done
-        public Result<List<Comment>> ProjectComments(int projectId)
+        public Result<List<string>> ProjectComments(int projectId)
         {
             if (!IfProjectExist(projectId))
             {
@@ -620,8 +631,20 @@ namespace CrowDoServices.Services
                 resultList.ErrorText = "projet doesn’t exist";
                 return resultList;
             }
+            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
+            if (project.ProjectStatus == false)
+            {
+                resultList.ErrorCode = 8;
+                resultList.ErrorText = "projet is inactive";
+                return resultList;
+            }
             var commentList = context.Set<Comment>().Where(c => c.ProjectId == projectId).ToList();
-            if (commentList == null)
+            var comments = new List<string>();
+            foreach (var c in commentList)
+            {
+                comments.Add(c.CommentText);
+            }
+            if (comments == null)
             {
                 resultList.ErrorCode = 13;
                 resultList.ErrorText = "no comment";
@@ -629,7 +652,7 @@ namespace CrowDoServices.Services
             }
             resultList.ErrorCode = 0;
             resultList.ErrorText = "successfull";
-            resultList.Data = commentList;
+            resultList.Data = comments;
             return resultList;
         }
 
@@ -700,8 +723,8 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
-        public Result<bool> UpdateProject(string email, int projectId, string title, double fundingBudjet)
+        
+        public Result<bool> UpdateProject(string email, int projectId,string title, bool status)
         {
             //cheking if the email is valid
             if (!IsvalidEmail(email))
@@ -730,8 +753,9 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
 
+
             var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
-            project.PledgeOfFunding = fundingBudjet;
+            project.ProjectTitle = title;
             if (context.Set<Project>().Any(p => p.ProjectTitle == title))
             {
                 resultbool.ErrorCode = 9;
@@ -739,7 +763,7 @@ namespace CrowDoServices.Services
                 resultbool.Data = false;
                 return resultbool;
             }
-            project.ProjectTitle = title;
+            project.ProjectStatus=status;
             if (context.SaveChanges() >= 1)
             {
                 resultbool.ErrorCode = 0;
@@ -756,7 +780,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> UpdateProjectInfo(string email, int projectinfoId, string title, string description, string filePath)
         {
 

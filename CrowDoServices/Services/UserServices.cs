@@ -17,6 +17,9 @@ namespace CrowDoServices.Services
         {
             context = contexts;
         }
+
+
+
         public bool IsvalidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
