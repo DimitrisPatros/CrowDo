@@ -14,6 +14,8 @@ namespace CrowDo.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        //Dependency injection
+
         private IProjectServices projectService;
         private ISearchServices searchService;
         private IUserServices userService;
@@ -24,6 +26,7 @@ namespace CrowDo.Controllers
             userService = userServices;
         }
 
+        //struct for UserRegister
         public struct NewUser
         {
             public string Email { get; set; }
@@ -37,7 +40,7 @@ namespace CrowDo.Controllers
         }
 
        
-
+        //struct for UserUpdate
         public struct UpdateUser
         {
             public string Email { get; set; }
@@ -52,12 +55,14 @@ namespace CrowDo.Controllers
         }
 
 
+        //struct for CreatePledge
         public struct PledgeCreate
         {
             public string Email { get; set; }
             public int pledgeOptionId { get; set; }
         }
 
+        /*                                                      Posts                                                   */
 
         [HttpPost("/RegisterUser")]
         public IActionResult RegisterUser([FromBody] NewUser temp)
@@ -66,6 +71,16 @@ namespace CrowDo.Controllers
                 , temp.Country, temp.State, temp.ZipCode, temp.DateOfBirth);
             return Ok(result);
         }
+
+
+        [HttpPost("/CreatePledge")]
+        public IActionResult CreatePledge([FromBody] PledgeCreate temp)
+        {
+            var result = userService.CreatePledge(temp.Email, temp.pledgeOptionId);
+            return Ok(result);
+        }
+
+        /*                                                      Puts                                                    */
 
         [HttpPut("/DeleteUser")]
         public IActionResult UserDelete([FromBody] string email)
@@ -83,36 +98,32 @@ namespace CrowDo.Controllers
             return Ok(result);
         }
 
-        [HttpPost("/CreatePledge")]
-        public IActionResult CreatePledge([FromBody] PledgeCreate temp)
-        {
-            var result = userService.CreatePledge(temp.Email, temp.pledgeOptionId);
-            return Ok(result);
-        }
+       /*                                                       Gets                                                    */
 
-        [HttpPost("/MyPledges")]
-        public IActionResult MyPledges([FromBody] string email)
+        [HttpGet("/MyPledges{email}")]
+        public IActionResult MyPledges(string email)
         {
             var result = userService.MyPledges(email);
             return Ok(result);
         }
 
-        [HttpPost("/BackedProjects")]
-        public IActionResult BackedProjects([FromBody] string email)
+        
+        [HttpGet("/BackedProjects{email}")]
+        public IActionResult BackedProjects(string email)
         {
             var result = userService.BackedProjects(email);
             return Ok(result);
         }
 
-        [HttpPost("/MyProjects")]
-        public IActionResult MyProjects([FromBody] string email)
+        [HttpGet("/MyProjects{email}")]
+        public IActionResult MyProjects(string email)
         {
             var result = userService.MyProjects(email);
             return Ok(result);
         }
 
-        [HttpPost("/UserComments")]
-        public IActionResult UserComments([FromBody] string email)
+        [HttpGet("/UserComments{email}")]
+        public IActionResult UserComments(string email)
         {
             var result = userService.UserComments(email);
             return Ok(result);

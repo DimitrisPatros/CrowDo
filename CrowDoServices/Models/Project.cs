@@ -11,7 +11,7 @@ namespace CrowDoServices.Models
         public int ProjectId { get; set; }
         public int UserId { get; set; }
         public string ProjectTitle { get; set; }
-        public double PledgeOfFunding { get; set; }//name change
+        public double PledgeOfFunding { get; set; }
         public double PledgeProgress { get; set; }
         public bool ProjectStatus { get; set; }
         public bool ProjectSuccess { get; set; }
