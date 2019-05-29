@@ -19,8 +19,32 @@ namespace CrowDoServices.Services
         }
 
         public Result<bool> resultbool = new Result<bool>();
+
         public Result<List<string>> resultList = new Result<List<string>>();
 
+        private Result<bool> ValidateAll(string email, int projectId)
+        {            
+            if (!IsvalidEmail(email))
+            {
+                resultbool.ErrorCode = 1;
+                resultbool.ErrorText = "not valid email";
+                return resultbool;
+            }
+            if (!IfProjectExist(projectId))
+            {
+                resultbool.ErrorCode = 8;
+                resultbool.ErrorText = "projcet doesn’t exist";
+                return resultbool;
+            }
+            if (!IsValidateUser(email, projectId))
+            {
+                resultbool.ErrorCode = 3;
+                resultbool.ErrorText = "This user can't modify this project";
+                return resultbool;
+            }
+            resultbool.Data = true;
+            return resultbool;
+        }
         public bool IsvalidEmail(string email)
         {
             if (string.IsNullOrWhiteSpace(email))
@@ -217,33 +241,39 @@ namespace CrowDoServices.Services
         public Result<bool> AddProjectInfo(string email, int projectId,
                       string title, string description, string fileName)
         {
-
-            //cheking if the email is valid
-            if (!IsvalidEmail(email))
+            //validation email if the project exist and if the user can modify this project
+            var resultool = ValidateAll(email, projectId);
+            if (!resultbool.Data)
             {
-                resultbool.ErrorCode = 1;
-                resultbool.ErrorText = "not valid email";
-                resultbool.Data = false;
                 return resultbool;
             }
 
-            //chek if the projcet exist
-            if (!IfProjectExist(projectId))
-            {
-                resultbool.ErrorCode = 8;
-                resultbool.ErrorText = "projet doesn’t exist";
-                resultbool.Data = false;
-                return resultbool;
-            }
+            ////cheking if the email is valid
+            //if (!IsvalidEmail(email))
+            //{
+            //    resultbool.ErrorCode = 1;
+            //    resultbool.ErrorText = "not valid email";
+            //    resultbool.Data = false;
+            //    return resultbool;
+            //}
 
-            //cheking if the specific user can modify this projet
-            if (!IsValidateUser(email, projectId))
-            {
-                resultbool.ErrorCode = 3;
-                resultbool.ErrorText = "This user can't modify this project";
-                resultbool.Data = false;
-                return resultbool;
-            }
+            ////chek if the projcet exist
+            //if (!IfProjectExist(projectId))
+            //{
+            //    resultbool.ErrorCode = 8;
+            //    resultbool.ErrorText = "projet doesn’t exist";
+            //    resultbool.Data = false;
+            //    return resultbool;
+            //}
+
+            ////cheking if the specific user can modify this projet
+            //if (!IsValidateUser(email, projectId))
+            //{
+            //    resultbool.ErrorCode = 3;
+            //    resultbool.ErrorText = "This user can't modify this project";
+            //    resultbool.Data = false;
+            //    return resultbool;
+            //}
 
             //cheking if the project has already this project info
             if (context.Set<ProjectInfo>().Any(pi => pi.Title == title)
@@ -314,7 +344,7 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
         }
- 
+
         //done
         public Result<bool> CreateProject(string email, string projectTitle, double fundingBudjet)
         {
@@ -592,7 +622,7 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
             var project = context.Set<Project>().SingleOrDefault(p => p.ProjectId == projectId);
-            if(project.ProjectStatus==false)
+            if (project.ProjectStatus == false)
             {
                 resultbool.ErrorCode = 8;
                 resultbool.ErrorText = "projet is inactive";
@@ -723,8 +753,8 @@ namespace CrowDoServices.Services
             }
         }
 
-        
-        public Result<bool> UpdateProject(string email, int projectId,string title, bool status)
+
+        public Result<bool> UpdateProject(string email, int projectId, string title, bool status)
         {
             //cheking if the email is valid
             if (!IsvalidEmail(email))
@@ -763,7 +793,7 @@ namespace CrowDoServices.Services
                 resultbool.Data = false;
                 return resultbool;
             }
-            project.ProjectStatus=status;
+            project.ProjectStatus = status;
             if (context.SaveChanges() >= 1)
             {
                 resultbool.ErrorCode = 0;

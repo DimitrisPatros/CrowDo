@@ -14,10 +14,12 @@ namespace CrowDoServices.Models
         public double PledgeOfFunding { get; set; }//name change
         public double PledgeProgress { get; set; }
         public bool ProjectStatus { get; set; }
-        public bool ProjectSuccess { get; set; }
+        public bool ProjectSuccess { get; set; }      
         public int ProjectViews { get; set; }
         public List<ProjectInfo> ProjectInfo { get; set; }
         public List<PledgeOptions> PledgeOptions { get; set; }
         public DateTime CreationDate { get; set; }
+        public List<ProjectCategories> ProjectCategories { get; set; }
+        public User User { get; set; }
     }
 }

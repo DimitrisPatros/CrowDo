@@ -1,77 +1,257 @@
 ﻿using CrowDoServices.Interfaces;
 using CrowDoServices.Models;
+using Microsoft.EntityFrameworkCore;
+using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CrowDoServices.Services
 {
-
     public class SearchServices : ISearchServices
     {
-        public CrowDoDbContext context;
-        public SearchServices(CrowDoDbContext contexts)
+        private CrowDoDbContext context;
+
+        public SearchServices(CrowDoDbContext crowDoDbContext)
         {
-            context = contexts;
-        }
-        public Result<List<Project>> AlmostExpireProjects()
-        {
-            throw new NotImplementedException();
+            context = crowDoDbContext;
+
         }
 
+        //search project by title
+        public Result<Project> SearchPoject(string title)
+        {
+            var result = new Result<Project>();
+            var project = context.Set<Project>().SingleOrDefault(p => p.ProjectTitle == title);
+
+            project.ProjectViews++;
+
+            if (project == null)
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Project not found";
+
+                return result;
+            }
+
+            if (context.SaveChanges() < 1)
+
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "";
+
+                return result;
+            }
+
+            return result;
+        }
+
+        //done
         public Result<List<Project>> AvailableProjects()
         {
-            throw new NotImplementedException();
-        }
+            var context = new CrowDoDbContext();
 
+            var result = new Result<List<Project>>();
+            var availablelist = context.Set<Project>()
+                .Any(ap => ap.ProjectStatus == true);
+
+            if (availablelist == false)
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "No available projects";
+
+                return result;
+            }
+
+            return result;
+        }
+        //done
         public Result<List<Project>> FundedProjects()
         {
-            throw new NotImplementedException();
+
+            var result = new Result<List<Project>>();
+            var fundedlist = context.Set<Project>()
+                .Where(fd => fd.ProjectSuccess == true).ToList();
+
+            if (!fundedlist.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "No funded projects";
+
+                return result;
+            }
+            result.Data = fundedlist;
+            return result;
         }
 
-        public Result<List<Project>> LastMonthProjects()
+        //done
+        public Result<List<Project>> RecentProjects()
         {
-            throw new NotImplementedException();
+            var result = new Result<List<Project>>();
+            result.Data = context.Set<Project>()
+                .Where(rp => rp.ProjectStatus == true && rp.CreationDate >= DateTime.Today.AddDays(-5)).ToList();
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Recent list not found";
+            }
+            return result;
+
         }
 
+        //done
+        public Result<List<Project>> MostVisitedProjects()
+        {
+            var result = new Result<List<Project>>();
+            result.Data = context.Set<Project>()
+                .OrderByDescending(mv => mv.ProjectViews)
+                .Take(10)
+                .ToList();
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Recent list not found";
+            }
+            return result;
+        }
+
+        //done
+        public Result<List<User>> TopProjectCreators(int number)
+        {
+            var result = new Result<List<User>>();
+            var users = context.Set<User>().Include(u => u.Projects);
+
+            result.Data= users.OrderByDescending(t => t.Projects.Where(p => p.ProjectSuccess).Count()).Take(number).ToList();
+
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Recent list not found";
+            }
+            return result;
+        }
+        
+        private Result<List<Project>> LastnumberProjects(int number)
+        {
+
+            var result = new Result<List<Project>>();
+            result.Data = context.Set<Project>()
+               .Where(w => w.CreationDate >= DateTime.Today.AddDays(-number))
+               .ToList();
+
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Last week project not found";
+            }
+            return result;
+        }
+
+        //done
         public Result<List<Project>> LastWeekProjects()
         {
-            throw new NotImplementedException();
+            return LastnumberProjects(7);
         }
+
+
+        //done
+        public Result<List<Project>> LastMonthProjects()
+        {
+            return LastnumberProjects(30);
+        }
+
+        //done
+        public Result<List<Project>> ProjectByCategory(int categoryId)
+        {
+            var result = new Result<List<Project>>();
+            var queryData = context.Set<ProjectCategories>().Include(pc => pc.Project)
+                .Where(pc => pc.CategoryId == categoryId)
+                .ToList();
+
+            result.Data = new List<Project>();
+            foreach (var projectCategory in queryData)
+            {
+                result.Data.Add(projectCategory.Project);
+            }
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Not found";                
+            }
+            return result;
+        }
+        //done
+        public Result<List<Project>> ProjectByCreator(int userId)
+        {
+            var result = new Result<List<Project>>();
+            var queryData = context.Set<User>().Include(u => u.Projects).SingleOrDefault(u => u.UserId == userId);
+            //result.Data = context.Set<User>().Include(u => u.Projects).SingleOrDefault(u => u.UserId == userId)?.Projects 
+            //?? new List<Project>();
+
+            result.Data = queryData.Projects;
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Not found";
+            }
+            return result;
+        }
+
 
         public Result<List<Project>> MostFunded()
         {
-            throw new NotImplementedException();
+            var result = new Result<List<Project>>();
+            result.Data = context.Project.OrderByDescending(p => p.PledgeProgress).ToList();
+
+            return ReturnData(result);
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Not found";
+            }
+            return result;
         }
 
-        public Result<List<Project>> MostVisitedProjects()
+        public Result<List<Project>> AlmostExpireProjects()
         {
-            throw new NotImplementedException();
+            return LastnumberProjects(28);
         }
 
-        public Result<List<Project>> ProjectByCategory(string categoryName)
+
+        public Result<List<ProjectViewModel>> SearchProjects(string q)
         {
-            throw new NotImplementedException();
+            /*
+             select * from dbo.Project p
+    left join dbo.ProjectCategories pc on p.ProjectId = pc.ProjectId
+    left join dbo.Category c on pc.CategoryId = c.CategoryId
+    */
+            Result<List<ProjectViewModel>> ff = new Result<List<ProjectViewModel>>();
+            List<Project> projects = context.Project
+                                .Include(project => project.User)
+                                .Include(project => project.ProjectCategories)
+                                    .ThenInclude(projectCategories => projectCategories.Category)
+                                    .Where(p => p.ProjectTitle.Contains(q)
+                                    ||
+                                    p.User.Name.Contains(q)
+                                    ||
+                                    p.ProjectCategories.Any(pc => pc.Category.CategoryName.Contains(q))).ToList();
+            ff.Data = new List<ProjectViewModel>();
+            foreach (var project in projects)
+            {
+                ff.Data.Add(new ProjectViewModel(project));
+            }
+            return ff;
         }
 
-        public Result<List<Project>> ProjectByCreator(string creatorName)
+        private Result<List<T>> ReturnData<T>(Result<List<T>> result)
         {
-            throw new NotImplementedException();
-        }
-
-        public Result<List<Project>> RecentProjects()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Result<Project> SearchPoject(string title)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Result<List<User>> TopProjectCreators(int number)
-        {
-            throw new NotImplementedException();
+            if (result.Data == null || !result.Data.Any())
+            {
+                result.ErrorCode = 0;
+                result.ErrorText = "Not found";
+            }
+            return result;
         }
     }
 }

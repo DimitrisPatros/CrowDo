@@ -5,8 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190529105200_ProjectNavigationalProperty.cs" />
+    <Compile Remove="Migrations\20190529105200_ProjectNavigationalProperty.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="NPOI" Version="2.4.1" />
   </ItemGroup>
 
 </Project>

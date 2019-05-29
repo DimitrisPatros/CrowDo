@@ -14,7 +14,7 @@ namespace CrowDoServices.Interfaces
         Result<bool> ProgressOfFunding( int projectId);
 
         //Projectinfo Create Update Delete
-        Result<bool> AddProjectInfo(string email, int ProjectId,string title,string description,string filePath);
+        Result<bool> AddProjectInfo(string email, int ProjectId,string title,string description,string filePath);        
         Result<bool> DeleteProjectInfo(string email,int projectinfoId);
         Result<bool> UpdateProjectInfo(string email, int ProjectinfoId, string title, string description, string filePath);
         

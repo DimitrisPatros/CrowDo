@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using CrowDoServices.Services;
 using CrowDoServices;
 using CrowDoServices.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace CrowDo.Controllers
 {
@@ -81,8 +82,8 @@ namespace CrowDo.Controllers
 
 
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        public struct NEwProjectInfo
-        {
+        public struct NewProjectInfo
+        { 
             public string Email { get; set; }
             public int ProjectId { get; set; }
             public string Title { get; set; }
@@ -91,7 +92,7 @@ namespace CrowDo.Controllers
         }
 
         [HttpPost("/ AddProjectInfo")]
-        public IActionResult AddProjectInfo([FromBody] NEwProjectInfo npi)
+        public IActionResult AddProjectInfo([FromBody] NewProjectInfo npi)
         {
             var temp = projectService.AddProjectInfo(npi.Email, npi.ProjectId, npi.Title, npi.Descritpion, npi.Filename);
             return Ok(temp);
@@ -209,6 +210,20 @@ namespace CrowDo.Controllers
             return Ok(temp);
         }
 
+
+        [HttpGet("/Search")]
+        public IActionResult Search(string q)
+        {
+            var temp  = searchService.SearchProjects(q);
+            return Ok(temp);
+        }
+
+        [HttpGet("/TopCreators/{number}")]
+        public IActionResult Search(int number)
+        {
+            var temp = searchService.TopProjectCreators(number);
+            return Ok(temp);
+        }
 
 
     }
