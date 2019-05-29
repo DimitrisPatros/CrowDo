@@ -29,7 +29,7 @@ namespace CrowDo
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<CrowDoDbContext>(options =>options
-            .UseSqlServer(@"Server=localhost;Database=CrowDo; Trusted_Connection = True; ConnectRetryCount = 0;"));
+            .UseSqlServer(@"Server=localhost;Database=CrowDoDataBase; Trusted_Connection = True; ConnectRetryCount = 0;"));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddTransient<IProjectServices, ProjectServices>();
             services.AddScoped<IUserServices, UserServices>();

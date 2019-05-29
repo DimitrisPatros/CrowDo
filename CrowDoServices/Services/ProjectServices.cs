@@ -11,7 +11,6 @@ namespace CrowDoServices.Services
     public class ProjectServices : IProjectServices
     {
         private CrowDoDbContext context;
-
         public ProjectServices(CrowDoDbContext crowDoDbContext)
         {
             context = crowDoDbContext;
@@ -85,7 +84,6 @@ namespace CrowDoServices.Services
             return true;
         }
 
-        //done
         public Result<bool> AddCategoryToProject(string email, int projectId, string categoryName)
         {
             //cheking if the email is valid
@@ -165,7 +163,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> AddPledgeOptionToProject(string email, int projectId,
             string titleOfPledge, double priceOfPledge, DateTime estimateDelivery,
             DateTime durationOfPldege, int numberOfAvailablePledges, string description)
@@ -237,7 +234,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> AddProjectInfo(string email, int projectId,
                       string title, string description, string fileName)
         {
@@ -293,7 +289,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> AutoProjectStatusUpdate()
         {
             var projectList = context.Set<Project>().Where(pl => pl.CreationDate.AddDays(30) < DateTime.Today).ToList();
@@ -318,7 +313,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> CreateProject(string email, string projectTitle, double fundingBudjet)
         {
             //cheking if the email is valid
@@ -371,7 +365,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> DeleteCategoryFromProject(string email, int projectId, string categoryName)
         {
             //cheking if the email is valid
@@ -429,7 +422,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> DeletePledgeOptionFromProject(string email, int projectId, int pledgeOptionsId)
         {
             //cheking if the email is valid
@@ -487,7 +479,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> DeleteProject(string email, int projectId)
         {
             //cheking if the email is valid
@@ -535,7 +526,6 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> DeleteProjectInfo(string email, int projectinfoId)
         {
 
@@ -583,10 +573,8 @@ namespace CrowDoServices.Services
             }
         }
 
-        //done
         public Result<bool> ProgressOfFunding(int projectId)
         {
-            //chek if the projcet exist
             if (!IfProjectExist(projectId))
             {
                 resultbool.ErrorCode = 8;
@@ -602,7 +590,6 @@ namespace CrowDoServices.Services
                 resultbool.Data = false;
                 return resultbool;
             }
-
 
             if (project.PledgeProgress >= project.PledgeOfFunding)
             {
@@ -624,8 +611,6 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
         }
-
-        //done
         public Result<List<string>> ProjectComments(int projectId)
         {
             if (!IfProjectExist(projectId))
@@ -658,8 +643,6 @@ namespace CrowDoServices.Services
             resultList.Data = comments;
             return resultList;
         }
-
-        //done
         public Result<bool> UpdatePledgeOptionOfProject(string email, int projectId, int pledgeOptionsId, string titleOfPledge, double priceOfPledge, DateTime estimateDelivery, DateTime durationOfPldege, int numberOfAvailablePledges, string description)
         {
 
@@ -726,7 +709,6 @@ namespace CrowDoServices.Services
             }
         }
 
-
         public Result<bool> UpdateProject(string email, int projectId, string title, bool status)
         {
             //cheking if the email is valid
@@ -782,7 +764,6 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
         }
-
         public Result<bool> UpdateProjectInfo(string email, int projectinfoId, string title, string description, string filePath)
         {
 
@@ -834,34 +815,3 @@ namespace CrowDoServices.Services
     }
 }
 
-
-////this method can be used to save a collum in the project table
-//public Result<bool> AutoProjectProgressUpdate()
-//{
-//    var projectList = context.Set<Project>().Where(pl => pl.ProjectStatus==true).ToList();
-//    //run for all the active project
-//    foreach (var p in projectList)
-//    {
-//        //bring a list with all pledge option of this project
-//        var pledgeOptionCount = context.Set<PledgeOptions>().Where(po => po.ProjectId == p.ProjectId).ToList();
-
-//        foreach (var po in pledgeOptionCount)
-//        {
-//            p.PledgeProgress += po.PriceOfPlege * po.NumberOfBacker;
-//        }
-//    }
-//    if (context.SaveChanges() >= projectList.Count())
-//    {
-//        resultbool.ErrorCode = 0;
-//        resultbool.ErrorText = "Successfull";
-//        resultbool.Data = true;
-//        return resultbool;
-//    }
-//    else
-//    {
-//        resultbool.ErrorCode = 4;
-//        resultbool.ErrorText = "couldnt save in db";
-//        resultbool.Data = false;
-//        return resultbool;
-//    }
-//}

@@ -19,5 +19,6 @@ namespace CrowDoServices.Models
         public bool IsActive { get; set; }
         public List<Project> Projects { get; set; }
         public List<Pledges> MyPledges { get; set; }
+        public List<Comment> Mycomments { get; set; }
     }
 }

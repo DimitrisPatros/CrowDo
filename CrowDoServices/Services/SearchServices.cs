@@ -121,7 +121,6 @@ namespace CrowDoServices.Services
         {
             var result = new Result<List<User>>();
             var users = context.Set<User>().Include(u => u.Projects);
-
             result.Data= users.OrderByDescending(t => t.Projects.Where(p => p.ProjectSuccess).Count()).Take(number).ToList();
 
             if (result.Data == null || !result.Data.Any())
@@ -131,7 +130,8 @@ namespace CrowDoServices.Services
             }
             return result;
         }
-        
+
+        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         private Result<List<Project>> LastnumberProjects(int number)
         {
 
@@ -148,20 +148,23 @@ namespace CrowDoServices.Services
             return result;
         }
 
-        //done
         public Result<List<Project>> LastWeekProjects()
         {
             return LastnumberProjects(7);
         }
 
-
-        //done
         public Result<List<Project>> LastMonthProjects()
         {
             return LastnumberProjects(30);
         }
 
-        //done
+        public Result<List<Project>> AlmostExpireProjects()
+        {
+            return LastnumberProjects(28);
+        }
+        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
         public Result<List<Project>> ProjectByCategory(int categoryId)
         {
             var result = new Result<List<Project>>();
@@ -186,10 +189,8 @@ namespace CrowDoServices.Services
         {
             var result = new Result<List<Project>>();
             var queryData = context.Set<User>().Include(u => u.Projects).SingleOrDefault(u => u.UserId == userId);
-            //result.Data = context.Set<User>().Include(u => u.Projects).SingleOrDefault(u => u.UserId == userId)?.Projects 
-            //?? new List<Project>();
-
             result.Data = queryData.Projects;
+
             if (result.Data == null || !result.Data.Any())
             {
                 result.ErrorCode = 0;
@@ -198,50 +199,26 @@ namespace CrowDoServices.Services
             return result;
         }
 
-
+        public Result<List<ProjectViewModel>> SearchProjects(string q)
+        {
+            Result<List<ProjectViewModel>> SearchResult = new Result<List<ProjectViewModel>>();
+            List<Project> projects = context.Project.Include(project => project.ProjectCategories)
+                                    .ThenInclude(projectCategories => projectCategories.Category)
+                                    .Where(p => p.ProjectTitle.Contains(q)
+                                    ||
+                                    p.ProjectCategories.Any(pc => pc.Category.CategoryName.Contains(q))).ToList();
+            SearchResult.Data = new List<ProjectViewModel>();
+            foreach (var p in projects)
+            {
+                SearchResult.Data.Add(new ProjectViewModel(p));
+            }
+            return SearchResult;
+        }
         public Result<List<Project>> MostFunded()
         {
             var result = new Result<List<Project>>();
             result.Data = context.Project.OrderByDescending(p => p.PledgeProgress).ToList();
-
             return ReturnData(result);
-            if (result.Data == null || !result.Data.Any())
-            {
-                result.ErrorCode = 0;
-                result.ErrorText = "Not found";
-            }
-            return result;
-        }
-
-        public Result<List<Project>> AlmostExpireProjects()
-        {
-            return LastnumberProjects(28);
-        }
-
-
-        public Result<List<ProjectViewModel>> SearchProjects(string q)
-        {
-            /*
-             select * from dbo.Project p
-    left join dbo.ProjectCategories pc on p.ProjectId = pc.ProjectId
-    left join dbo.Category c on pc.CategoryId = c.CategoryId
-    */
-            Result<List<ProjectViewModel>> ff = new Result<List<ProjectViewModel>>();
-            List<Project> projects = context.Project
-                                .Include(project => project.User)
-                                .Include(project => project.ProjectCategories)
-                                    .ThenInclude(projectCategories => projectCategories.Category)
-                                    .Where(p => p.ProjectTitle.Contains(q)
-                                    ||
-                                    p.User.Name.Contains(q)
-                                    ||
-                                    p.ProjectCategories.Any(pc => pc.Category.CategoryName.Contains(q))).ToList();
-            ff.Data = new List<ProjectViewModel>();
-            foreach (var project in projects)
-            {
-                ff.Data.Add(new ProjectViewModel(project));
-            }
-            return ff;
         }
 
         private Result<List<T>> ReturnData<T>(Result<List<T>> result)

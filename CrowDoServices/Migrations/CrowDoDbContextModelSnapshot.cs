@@ -34,15 +34,21 @@ namespace CrowDoServices.Migrations
 
             modelBuilder.Entity("CrowDoServices.Models.Comment", b =>
                 {
-                    b.Property<int>("ProjectId");
-
-                    b.Property<int>("UserId");
+                    b.Property<int>("CommentId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CommentText");
 
                     b.Property<DateTime>("DateOfComment");
 
-                    b.HasKey("ProjectId", "UserId");
+                    b.Property<int>("ProjectId");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("CommentId");
+
+                    b.HasIndex("ProjectId");
 
                     b.HasIndex("UserId");
 
@@ -119,6 +125,8 @@ namespace CrowDoServices.Migrations
 
                     b.HasKey("ProjectId");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Project");
                 });
 
@@ -186,20 +194,20 @@ namespace CrowDoServices.Migrations
                         .IsUnique()
                         .HasFilter("[Email] IS NOT NULL");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("CrowDoServices.Models.Comment", b =>
                 {
                     b.HasOne("CrowDoServices.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("comments")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CrowDoServices.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Mycomments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("CrowDoServices.Models.PledgeOptions", b =>
@@ -217,7 +225,15 @@ namespace CrowDoServices.Migrations
                         .HasForeignKey("PledgeOptionsId");
 
                     b.HasOne("CrowDoServices.Models.User", "User")
-                        .WithMany()
+                        .WithMany("MyPledges")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("CrowDoServices.Models.Project", b =>
+                {
+                    b.HasOne("CrowDoServices.Models.User", "User")
+                        .WithMany("Projects")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
@@ -225,12 +241,12 @@ namespace CrowDoServices.Migrations
             modelBuilder.Entity("CrowDoServices.Models.ProjectCategories", b =>
                 {
                     b.HasOne("CrowDoServices.Models.Category", "Category")
-                        .WithMany()
+                        .WithMany("ProjectCategories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("CrowDoServices.Models.Project", "Project")
-                        .WithMany()
+                        .WithMany("ProjectCategories")
                         .HasForeignKey("ProjectId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

@@ -15,21 +15,12 @@ namespace CrowDoServices.Interfaces
         Result<List<Project>> RecentProjects();
         Result<List<Project>> MostVisitedProjects();
         Result<List<User>> TopProjectCreators(int number);
-        //Must do mpliax
+
         Result<List<Project>> LastWeekProjects();
         Result<List<Project>> LastMonthProjects();
         Result<List<Project>> ProjectByCategory(int categoryId);
         Result<List<Project>> ProjectByCreator(int userId);
         Result<List<Project>> MostFunded();
         Result<List<Project>> AlmostExpireProjects();
-    }
-
-    public class ProjectViewModel
-    {
-        public int Id { get; set; }
-        public ProjectViewModel(Project project)
-        {
-            Id = project.ProjectId;
-        }
     }
 }

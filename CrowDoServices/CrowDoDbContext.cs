@@ -17,7 +17,7 @@ namespace CrowDoServices
         {
         }
 
-        
+        public DbSet<User> Users { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<PledgeOptions> PledgeOptions { get; set; }
@@ -30,9 +30,16 @@ namespace CrowDoServices
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
-            modelBuilder.Entity<Comment>().HasKey(c => new { c.ProjectId, c.UserId });
+
+            modelBuilder.Entity<Comment>().HasOne(i => i.User).WithMany(c => c.Mycomments)
+            .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Pledges>().HasKey(p => new { p.PledgeOptionId, p.UserId });
+
             modelBuilder.Entity<ProjectCategories>().HasKey(p => new { p.ProjectId, p.CategoryId });
+
+            modelBuilder.Entity<Project>().HasOne(i => i.User).WithMany(c => c.Projects)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 
