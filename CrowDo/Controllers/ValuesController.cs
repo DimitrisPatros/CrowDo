@@ -44,6 +44,50 @@ namespace CrowDo.Controllers
                 , temp.Country, temp.State, temp.ZipCode, temp.DateOfBirth);
         }
 
+        [HttpPut("/DeleteUser/{email}")]
+        public IActionResult UserDelete(string email)
+        {
+            var result = userService.UserDelete(email);
+            return Ok(result);
+        }
+
+        [HttpPut("/UpdateUser/{email}")]
+        public IActionResult UserUpdate(string email,[FromBody] NewUser temp)
+        {
+            var result = userService.UserUpdate(email, temp.Name, temp.Surname, temp.Address
+                , temp.Country, temp.State, temp.ZipCode, temp.DateOfBirth, temp.Email);
+            return Ok(result);
+        }
+
+        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        [HttpPost("/CreatePledge/{pledgeOptionId}/email {email}")]
+        public IActionResult CreatePledge(int pledgeOptionId,string email)
+        {
+            var result = userService.CreatePledge(email, pledgeOptionId);
+            return Ok(result);
+        }
+
+        [HttpGet("/MyPledges{email}")]
+        public IActionResult MyPledges(string email)
+        {
+            var result = userService.MyPledges(email);
+            return Ok(result);
+        }
+
+        [HttpGet("/MyProjects{email}")]
+        public IActionResult MyProjects(string email)
+        {
+            var result = userService.MyProjects(email);
+            return Ok(result);
+        }
+
+        [HttpGet("/UserComments{email}")]
+        public IActionResult UserComments(string email)
+        {
+            var result = userService.UserComments(email);
+            return Ok(result);
+        }
+
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         public struct Category
         {
@@ -58,6 +102,12 @@ namespace CrowDo.Controllers
             return Ok(temp);
         }
 
+        [HttpPut("/  DeleteCategoryFromProject")]
+        public IActionResult DeleteCategoryFromProject(Category category)
+        {
+            var temp = projectService.DeleteCategoryFromProject(category.Email, category.ProjectId, category.CategoryName);
+            return Ok(temp);
+        }
 
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         public struct NEwPledgeOptionToProject
@@ -80,7 +130,40 @@ namespace CrowDo.Controllers
             return Ok(temp);
         }
 
+        public struct RemovePledge
+        {
+            public string Email { get; set; }
+            public int ProjectId { get; set; }
+            public int PledgeOptionsId { get; set; }
+        }
+        [HttpPut("/  DeletePledgeOptionFromProject")]
+        public IActionResult DeletePledgeOptionFromProject(RemovePledge removePledge)
+        {
+            var temp = projectService.DeletePledgeOptionFromProject(removePledge.Email, removePledge.ProjectId, removePledge.PledgeOptionsId);
+            return Ok(temp);
+        }
 
+        public struct UpdatePledges
+        {
+            public string Email { get; set; }
+            public int ProjectId { get; set; }
+            public int PledgeOptionsId { get; set; }
+            public string TitleOfPledge { get; set; }
+            public double PriceOfPledge { get; set; }
+            public DateTime EstimateDelivery { get; set; }
+            public DateTime DurationOfPldegey { get; set; }
+            public int NumberOfAvailablePledges { get; set; }
+            public string Description { get; set; }
+
+        }
+        [HttpPut("/UpdatePledgeOptionOfProject")]
+        public IActionResult UpdatePledgeOptionOfProject([FromBody]UpdatePledges pledges)
+        {
+            var temp = projectService.UpdatePledgeOptionOfProject(pledges.Email, pledges.ProjectId, pledges.PledgeOptionsId
+                , pledges.TitleOfPledge, pledges.PriceOfPledge, pledges.EstimateDelivery, pledges.DurationOfPldegey
+                , pledges.NumberOfAvailablePledges, pledges.Description);
+            return Ok(temp);
+        }
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         public struct NewProjectInfo
         { 
@@ -98,11 +181,10 @@ namespace CrowDo.Controllers
             return Ok(temp);
         }
 
-        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        [HttpPost("/ AutoProjectStatusUpdate")]
-        public IActionResult AutoProjectStatusUpdate()
+        [HttpPut("/DeleteProjectInfo{ProjectInfoId}/User/{email}")]
+        public IActionResult DeleteProjectInfo(int ProjectInfoId, string email)
         {
-            var temp = projectService.AutoProjectStatusUpdate();
+            var temp = projectService.DeleteProjectInfo(email, ProjectInfoId);
             return Ok(temp);
         }
 
@@ -122,47 +204,20 @@ namespace CrowDo.Controllers
         }
 
 
-        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        [HttpPut("/  DeleteCategoryFromProject")]
-        public IActionResult DeleteCategoryFromProject(Category category)
-        {
-            var temp = projectService.DeleteCategoryFromProject(category.Email, category.ProjectId, category.CategoryName);
-            return Ok(temp);
-        }
-
-
-
-        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        public struct RemovePledge
-        {
-            public string Email { get; set; }
-            public int ProjectId { get; set; }
-            public int PledgeOptionsId { get; set; }
-        }
-        [HttpPut("/  DeletePledgeOptionFromProject")]
-        public IActionResult DeletePledgeOptionFromProject(RemovePledge removePledge)
-        {
-            var temp = projectService.DeletePledgeOptionFromProject(removePledge.Email, removePledge.ProjectId, removePledge.PledgeOptionsId);
-            return Ok(temp);
-        }
-
-        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         [HttpPut("/DeleteProject")]
-         public IActionResult DeleteProject(int ProjectId, string email)
+        public IActionResult DeleteProject(int ProjectId, string email)
         {
             var temp = projectService.DeleteProject(email, ProjectId);
             return Ok(temp);
         }
 
 
-        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        [HttpPut("/DeleteProjectInfo{ProjectInfoId}/User/{email}")]
-        public IActionResult DeleteProjectInfo(int ProjectInfoId, string email)
+        [HttpPut("/ UpdateProject/{ProjectId}/status{status}")]
+        public IActionResult UpdateProject(int ProjectId, bool status, [FromBody] NEwProject project)
         {
-            var temp = projectService.DeleteProjectInfo(email, ProjectInfoId);
+            var temp = projectService.UpdateProject(project.Email, ProjectId, project.ProjectTitle, status);
             return Ok(temp);
         }
-
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         [HttpPut("/ProgressOfFunding/{ProjectId}")]
         public IActionResult ProgressOfFunding(int ProjectId)
@@ -172,45 +227,21 @@ namespace CrowDo.Controllers
         }
 
 
-        //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        [HttpPost("/ AutoProjectStatusUpdate")]
+        public IActionResult AutoProjectStatusUpdate()
+        {
+            var temp = projectService.AutoProjectStatusUpdate();
+            return Ok(temp);
+        }
+
+
         [HttpGet("/ProjectComments/{ProjectId}")]
         public IActionResult ProjectComments(int ProjectId)
         {
             var temp = projectService.ProjectComments(ProjectId);
             return Ok(temp);
         }
-
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        public struct UpdatePledges
-        {
-            public string Email { get; set; }
-            public int ProjectId { get; set; }
-            public int PledgeOptionsId { get; set; }
-            public string TitleOfPledge { get; set; }
-            public double PriceOfPledge { get; set; }
-            public DateTime EstimateDelivery { get; set; }
-            public DateTime DurationOfPldegey { get; set; }
-            public int NumberOfAvailablePledges { get; set; }
-            public string Description { get; set; }
-
-        }
-        [HttpPut("/UpdatePledgeOptionOfProject")]
-        public IActionResult UpdatePledgeOptionOfProject([FromBody]UpdatePledges pledges)
-        {
-            var temp = projectService.UpdatePledgeOptionOfProject(pledges.Email, pledges.ProjectId,pledges.PledgeOptionsId
-                , pledges.TitleOfPledge,pledges.PriceOfPledge,pledges.EstimateDelivery, pledges.DurationOfPldegey
-                ,pledges.NumberOfAvailablePledges, pledges.Description);
-            return Ok(temp);
-        }
-
-        [HttpPut("/ UpdateProject/{ProjectId}/status{status}")]
-        public IActionResult UpdateProject(int ProjectId,bool status ,[FromBody] NEwProject project)
-        {
-            var temp = projectService.UpdateProject(project.Email, ProjectId, project.ProjectTitle, status);
-            return Ok(temp);
-        }
-
-
         [HttpGet("/Search")]
         public IActionResult Search(string q)
         {
@@ -225,6 +256,18 @@ namespace CrowDo.Controllers
             return Ok(temp);
         }
 
+
+        // AvailableProjects();
+        //FundedProjects();
+        // RecentProjects();
+        // MostVisitedProjects();
+        //RTopProjectCreators(int number);
+        //LastWeekProjects();
+        //LastMonthProjects();
+        //ProjectByCategory(int categoryId);
+        //ProjectByCreator(int userId);
+        //MostFunded();
+        //R AlmostExpireProjects();
 
     }
 }

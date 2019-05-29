@@ -9,7 +9,6 @@ namespace CrowDoServices.Interfaces
     {
         //main search
         Result<List<ProjectViewModel>> SearchProjects(string q);        
-
         Result<Project> SearchPoject(string title);
         Result<List<Project>> AvailableProjects();
         Result<List<Project>> FundedProjects();

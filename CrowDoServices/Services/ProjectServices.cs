@@ -220,7 +220,7 @@ namespace CrowDoServices.Services
             newPledgeOption.Description = description;
 
             context.Add(newPledgeOption);
-            context.SaveChanges();
+
             if (context.SaveChanges() >= 1)
             {
                 resultbool.ErrorCode = 0;
@@ -248,33 +248,7 @@ namespace CrowDoServices.Services
                 return resultbool;
             }
 
-            ////cheking if the email is valid
-            //if (!IsvalidEmail(email))
-            //{
-            //    resultbool.ErrorCode = 1;
-            //    resultbool.ErrorText = "not valid email";
-            //    resultbool.Data = false;
-            //    return resultbool;
-            //}
-
-            ////chek if the projcet exist
-            //if (!IfProjectExist(projectId))
-            //{
-            //    resultbool.ErrorCode = 8;
-            //    resultbool.ErrorText = "projet doesn’t exist";
-            //    resultbool.Data = false;
-            //    return resultbool;
-            //}
-
-            ////cheking if the specific user can modify this projet
-            //if (!IsValidateUser(email, projectId))
-            //{
-            //    resultbool.ErrorCode = 3;
-            //    resultbool.ErrorText = "This user can't modify this project";
-            //    resultbool.Data = false;
-            //    return resultbool;
-            //}
-
+           
             //cheking if the project has already this project info
             if (context.Set<ProjectInfo>().Any(pi => pi.Title == title)
                 && context.Set<ProjectInfo>().Any(pi => pi.ProjectId == projectId))
@@ -303,7 +277,6 @@ namespace CrowDoServices.Services
             newProjectInfo.FileName = fileName;
 
             context.Add(newProjectInfo);
-            context.SaveChanges();
             if (context.SaveChanges() >= 1)
             {
                 resultbool.ErrorCode = 0;
