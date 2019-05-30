@@ -1,10 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CrowDo.Models
+namespace CrowDoServices.Models
 {
     public class Comment
     {
+        public int CommentId { get; set; }
         public int UserId { get; set; }
         public int ProjectId { get; set; }
         public User User { get; set; }

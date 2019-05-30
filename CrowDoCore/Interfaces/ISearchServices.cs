@@ -5,7 +5,7 @@ using System.Text;
 
 namespace CrowDoCore.Interfaces
 {
-    interface ISearchServices
+    public interface ISearchServices
     {
         Result<Project> SearchPoject(string title);
         Result<List<Project>> AvailableProjects();

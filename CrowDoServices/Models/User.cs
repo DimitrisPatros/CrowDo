@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace CrowDo.Models
+namespace CrowDoServices.Models
 {
     public class User
     {
@@ -17,5 +17,8 @@ namespace CrowDo.Models
         public string ZipCode { get; set; }
         public DateTime DateOfBirth { get; set; }
         public bool IsActive { get; set; }
+        public List<Project> Projects { get; set; }
+        public List<Pledges> MyPledges { get; set; }
+        public List<Comment> Mycomments { get; set; }
     }
 }

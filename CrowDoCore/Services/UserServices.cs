@@ -7,7 +7,7 @@ using System.Text;
 
 namespace CrowDoCore.Services
 {
-    class UserServices : IUserServices
+    public class UserServices : IUserServices
 
     {
         public CrowDoDbContext context = new CrowDoDbContext();

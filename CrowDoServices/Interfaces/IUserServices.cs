@@ -1,9 +1,9 @@
-﻿using CrowDo.Models;
+﻿using CrowDoServices.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CrowDo.Interfaces
+namespace CrowDoServices.Interfaces
 {
     public interface IUserServices
     {
