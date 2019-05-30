@@ -50,11 +50,9 @@ namespace CrowDoServices.Services
         //done
         public Result<List<Project>> AvailableProjects()
         {
-            var context = new CrowDoDbContext();
 
             var result = new Result<List<Project>>();
-            var availablelist = context.Set<Project>()
-                .Any(ap => ap.ProjectStatus == true);
+            var availablelist = context.Set<Project>().Any(ap => ap.ProjectStatus == true);
 
             if (availablelist == false)
             {

@@ -115,13 +115,13 @@ namespace CrowDoServices.Services
 
             //cheking if the project has already this category
             var projectCategory = context.Set<ProjectCategories>().Where(p => p.ProjectId == projectId).ToList();
-            if (projectCategory.Any(pc => pc.Category.CategoryName == categoryName))
-            {
-                resultbool.ErrorCode = 2;
-                resultbool.ErrorText = "the project has already this category";
-                resultbool.Data = false;
-                return resultbool;
-            }
+            //if (projectCategory.Any(pc => pc.Category.CategoryName == categoryName))
+            //{
+            //    resultbool.ErrorCode = 2;
+            //    resultbool.ErrorText = "the project has already this category";
+            //    resultbool.Data = false;
+            //    return resultbool;
+            //}
 
             //create a new category
             var category = context.Set<Category>().SingleOrDefault(c => c.CategoryName == categoryName);
@@ -595,7 +595,6 @@ namespace CrowDoServices.Services
             {
                 project.ProjectSuccess = true;
             }
-            project.ProjectSuccess = false;
             if (context.SaveChanges() >= 1)
             {
                 resultbool.ErrorCode = 0;

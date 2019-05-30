@@ -18,11 +18,14 @@ namespace CrowDo.Controllers
         private IProjectServices projectService;
         private ISearchServices searchService;
         private IUserServices userService;
-        public ValuesController(IProjectServices projectServices, ISearchServices searchServices, IUserServices userServices)
+        private ISerializer serializer;
+        public ValuesController(IProjectServices projectServices, ISearchServices searchServices,
+            IUserServices userServices, ISerializer serializers)
         {
             projectService = projectServices;
             searchService = searchServices;
             userService = userServices;
+            serializer = serializers;
         }
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
         public struct NewUser
@@ -316,5 +319,18 @@ namespace CrowDo.Controllers
             var temp = searchService.MostFunded();
             return Ok(temp);
         }
+
+        [HttpPost("/UploadFromJsonUsers/filename")]
+        public IActionResult UploadFromJsonUsers(string filename)
+        {
+            var temp = serializer.ReadFromFileUSers(filename);
+            foreach (var u in temp)
+            {
+                userService.UserRegister(u.Email, u.Name, u.Surname, u.Address,
+                    u.Country, u.State, u.ZipCode, u.DateOfBirth);
+            }
+            return Ok(temp);
+        }
+
     }
 }
