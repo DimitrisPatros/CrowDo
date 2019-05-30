@@ -246,6 +246,8 @@ namespace CrowDoServices.Services
                 newpledge.UserId = user.UserId;
                 newpledge.User = user;
                 newpledge.PledgeOptions = pledgeoption;
+                pledgeoption.NumberOfBacker++;
+                pledgeoption.NumberOfAvailablePledges--;
                 context.Add(newpledge);
             }
 
