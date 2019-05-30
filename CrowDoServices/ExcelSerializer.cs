@@ -62,9 +62,9 @@ namespace CrowDoServices
         public List<User> ReadFromFileUSers(string fileName)
         {
             var users = new List<User>();
-            var Jusers = new List<Jproject>();
+            var Jusers = new List<Juser>();
             string data = File.ReadAllText($@"{fileName}.json");
-            Jusers = JsonConvert.DeserializeObject<List<Jproject>>(data);
+            Jusers = JsonConvert.DeserializeObject<List<Juser>>(data);
 
             foreach (var ju in Jusers)
             {
@@ -78,46 +78,29 @@ namespace CrowDoServices
             return users;
         }
 
-        //public bool ReadFromFileProject(string fileName)
-        //{
-        //    var projects = new List<Project>();
-        //    var jprojects = new List<Jproject>();
-        //    string data = File.ReadAllText($@"{fileName}.json");
-        //    jprojects = JsonConvert.DeserializeObject<List<Jproject>>(data);
-
-        //    foreach (var Jp in jprojects)
-        //    {
-        //        var temptproject = new Project();
-        //        temptproject.Email = Jp.Email;
-        //        temptproject.Address = Jp.Address;
-        //        temptproject.Name = Jp.Name;
-        //        temptproject.DateOfBirth = DateTime.Now.AddYears(-20);
-        //        projects.Add(temptproject);
-        //    }
-
-        //    foreach (var u in projects)
-        //    {
-        //        userServices.UserRegister(u.Email, u.Name, u.Surname, u.Address,
-        //            u.Country, u.State, u.ZipCode, u.DateOfBirth);
-        //    }
-        //    return true;
-        //}
-
-
-
-
-
-
-
-
-
+        public List<JProject> ReadFromFileProject(string fileName)
+        {
+            var jprojects = new List<JProject>();
+            string data = File.ReadAllText($@"{fileName}.json");
+            jprojects = JsonConvert.DeserializeObject<List<JProject>>(data);
+            return jprojects;
+        }
     }
-    public class Jproject
+    public class Juser
     {
         public string Name { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
         public string personalMoto { get; set; }
     }
-
+    public class JProject
+    {
+        public string nameOfProject { get; set; }
+        public string Description { get; set; }
+        public string creator { get; set; }
+        public string keywords { get; set; }
+        public double demandedfunds { get; set; }
+        public DateTime DateOfCreation { get; set; }
+        public int DurationInMonths { get; set; }
+    }
 }

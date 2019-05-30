@@ -9,5 +9,6 @@ namespace CrowDoServices.Interfaces
     {
         bool SaveToFile(string fileName, List<Project> project);
         List<User> ReadFromFileUSers(string fileName);
+        List<JProject> ReadFromFileProject(string fileName);
     }
 }
