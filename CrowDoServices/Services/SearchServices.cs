@@ -52,9 +52,9 @@ namespace CrowDoServices.Services
         {
 
             var result = new Result<List<Project>>();
-            var availablelist = context.Set<Project>().Any(ap => ap.ProjectStatus == true);
+            result.Data = context.Set<Project>().Where(ap => ap.ProjectStatus == true).ToList();
 
-            if (availablelist == false)
+            if (result.Data.Count == 0)
             {
                 result.ErrorCode = 0;
                 result.ErrorText = "No available projects";
@@ -114,18 +114,26 @@ namespace CrowDoServices.Services
         }
 
         //done
-        public Result<List<User>> TopProjectCreators(int number)
+        public Result<List<UserViewModel>> TopProjectCreators(int number)
         {
-            var result = new Result<List<User>>();
+            var resulttopusers = new Result<List<UserViewModel>>();
+            var result = new List<User>();
             var users = context.Set<User>().Include(u => u.Projects);
-            result.Data= users.OrderByDescending(t => t.Projects.Where(p => p.ProjectSuccess).Count()).Take(number).ToList();
+            result = users.OrderByDescending(t => t.Projects.Where(p => p.ProjectSuccess).Count()).Take(number).ToList();
 
-            if (result.Data == null || !result.Data.Any())
+            var topUsers = new List<UserViewModel>();
+            foreach (var u in result)
             {
-                result.ErrorCode = 0;
-                result.ErrorText = "Recent list not found";
+                var topuser = new UserViewModel(u);
+                topUsers.Add(topuser);
             }
-            return result;
+            resulttopusers.Data = topUsers;
+            if (resulttopusers.Data == null || !resulttopusers.Data.Any())
+            {
+                resulttopusers.ErrorCode = 0;
+                resulttopusers.ErrorText = "Recent list not found";
+            }
+            return resulttopusers;
         }
 
         //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -134,13 +142,13 @@ namespace CrowDoServices.Services
 
             var result = new Result<List<Project>>();
             result.Data = context.Set<Project>()
-               .Where(w => w.CreationDate >= DateTime.Today.AddDays(-number))
+               .Where(w => w.CreationDate > DateTime.Now.AddDays(-number))
                .ToList();
 
             if (result.Data == null || !result.Data.Any())
             {
-                result.ErrorCode = 0;
-                result.ErrorText = "Last week project not found";
+                result.ErrorCode = 15;
+                result.ErrorText = "no projects";
             }
             return result;
         }
@@ -166,14 +174,28 @@ namespace CrowDoServices.Services
         {
             var result = new Result<List<Project>>();
             var queryData = context.Set<ProjectCategories>().Include(pc => pc.Project)
-                .Where(pc => pc.CategoryId == categoryId)
+                .Where(p => p.CategoryId == categoryId)
                 .ToList();
 
             result.Data = new List<Project>();
+
+
+            var projectsids = new List<int>();
+
+
             foreach (var projectCategory in queryData)
             {
-                result.Data.Add(projectCategory.Project);
+                projectsids.Add(projectCategory.ProjectId);
             }
+
+            foreach (var pi in projectsids)
+            {
+                result.Data.Add(context.Project.SingleOrDefault(p => p.ProjectId == pi));
+            }
+            //foreach (var projectCategory in queryData)
+            //{
+            //    result.Data.Add(projectCategory.Project);
+            //}
             if (result.Data == null || !result.Data.Any())
             {
                 result.ErrorCode = 0;
