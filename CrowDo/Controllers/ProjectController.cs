@@ -92,14 +92,14 @@ namespace CrowDo.Controllers
         }
 
         /*-------------------------------------------------------Delete------------------------------------------------------------------*/
-        [HttpPut("/DeleteProject")]
+        [HttpDelete("/Project")]
         public IActionResult DeleteProject(int ProjectId, string email)
         {
             var temp = projectService.DeleteProject(email, ProjectId);
             return Ok(temp);
         }
 
-        [HttpPut("/DeleteCategoryFromProject")]
+        [HttpDelete("/CategoryFromProject")]
         public IActionResult DeleteCategoryFromProject(Category category)
         {
             var temp = projectService.DeleteCategoryFromProject(category.Email, category.ProjectId, category.CategoryName);
@@ -112,14 +112,14 @@ namespace CrowDo.Controllers
             public int ProjectId { get; set; }
             public int PledgeOptionsId { get; set; }
         }
-        [HttpPut("/DeletePledgeOptionFromProject")]
+        [HttpDelete("/PledgeOptionFromProject")]
         public IActionResult DeletePledgeOptionFromProject(RemovePledge removePledge)
         {
             var temp = projectService.DeletePledgeOptionFromProject(removePledge.Email, removePledge.ProjectId, removePledge.PledgeOptionsId);
             return Ok(temp);
         }
 
-        [HttpPut("/DeleteProjectInfo{ProjectInfoId}/User/{email}")]
+        [HttpDelete("/ProjectInfo{ProjectInfoId}/User/{email}")]
         public IActionResult DeleteProjectInfo(int ProjectInfoId, string email)
         {
             var temp = projectService.DeleteProjectInfo(email, ProjectInfoId);

@@ -55,11 +55,8 @@ namespace CrowDo.Controllers
             var result = userService.CreatePledge(email, PledgeId);
             return Ok(result);
         }
-
-
-
         /*-------------------------------------------------------Delete------------------------------------------------------------------*/
-        [HttpPut("/DeleteUser/{email}")]
+        [HttpDelete("/User/{email}")]
         public IActionResult UserDelete(string email)
         {
             var result = userService.UserDelete(email);

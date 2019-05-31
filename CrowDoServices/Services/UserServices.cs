@@ -176,21 +176,50 @@ namespace CrowDoServices.Services
             if (user == null)
             {
                 resultbool.ErrorCode = 1;
-                resultbool.ErrorText = "not valid email!";
+                resultbool.ErrorText = "no user with this email";
                 return resultbool;
             }
 
+            //check if the user is over 18 years old
+            if (dateofbirth.AddYears(18) > DateTime.Now)
+            {
+                resultbool.ErrorCode = 6;
+                resultbool.ErrorText = "You are no over 18 years old !";
+                return resultbool;
+            }
             //update user's info
-            user.Name = name;
-            user.Surname = surname;
-            user.Address = address;
-            user.Country = country;
-            user.State = state;
-            user.ZipCode = zipcode;
-            user.DateOfBirth = dateofbirth;
-            user.Email = newEmail;
-
-
+            if (user.Name != null)
+            {
+                user.Name = name;
+            }
+            if (user.Surname != null)
+            {
+                user.Surname = surname;
+            }
+            if (user.Address != null)
+            {
+                user.Address = address;
+            }
+            if (user.Country != null)
+            {
+                user.Country = country;
+            }
+            if (user.State != null)
+            {
+                user.State = state;
+            }
+            if (user.ZipCode != null)
+            {
+                user.ZipCode = zipcode;
+            }
+            if (user.DateOfBirth != null)
+            {
+                user.DateOfBirth = dateofbirth;
+            }
+            if (user.Email != null)
+            {
+                user.Email = newEmail;
+            }
 
             //check if the result has been saved successfully
             if (context.SaveChanges() >= 1)

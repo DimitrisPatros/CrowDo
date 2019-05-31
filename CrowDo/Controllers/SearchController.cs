@@ -1,5 +1,6 @@
 ﻿using CrowDoServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CrowDo.Controllers
 {
@@ -30,11 +31,13 @@ namespace CrowDo.Controllers
         }
 
         [HttpGet("/AvailableProjects")]
-        public IActionResult AvailableProjects()
+        public async Task<IActionResult> AvailableProjects()
         {
-            var temp = searchService.AvailableProjects();
+            var temp = await searchService.AvailableProjects();
             return Ok(temp);
         }
+
+
         [HttpGet("/TopCreators/{number}")]
         public IActionResult Search(int number)
         {
