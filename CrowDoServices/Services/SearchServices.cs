@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CrowDoServices.Services
 {
@@ -48,11 +49,11 @@ namespace CrowDoServices.Services
         }
 
         //done
-        public Result<List<Project>> AvailableProjects()
+        public async Task<Result<List<Project>>> AvailableProjects()
         {
 
-            var result = new Result<List<Project>>();
-            result.Data = context.Set<Project>().Where(ap => ap.ProjectStatus == true).ToList();
+            var result = new  Result<List<Project>>();
+            result.Data = await context.Set<Project>().Where(ap => ap.ProjectStatus == true).ToListAsync();
 
             if (result.Data.Count == 0)
             {

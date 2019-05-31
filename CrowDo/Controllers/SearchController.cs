@@ -1,5 +1,6 @@
 ﻿using CrowDoServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CrowDo.Controllers
 {
@@ -22,32 +23,25 @@ namespace CrowDo.Controllers
         }
 
 
-
-        //[HttpGet("/ProjectComments/{ProjectId}")]
-        //public IActionResult ProjectComments(int ProjectId)
-        //{
-        //    var temp = projectService.ProjectComments(ProjectId);
-        //    return Ok(temp);
-        //}
-        ////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        [HttpGet("/Search")]
+        [HttpGet("/SearchByText")]
         public IActionResult Search(string q)
         {
             var temp = searchService.SearchProjects(q);
             return Ok(temp);
         }
 
+        [HttpGet("/AvailableProjects")]
+        public async Task<IActionResult> AvailableProjects()
+        {
+            var temp = await searchService.AvailableProjects();
+            return Ok(temp);
+        }
+
+
         [HttpGet("/TopCreators/{number}")]
         public IActionResult Search(int number)
         {
             var temp = searchService.TopProjectCreators(number);
-            return Ok(temp);
-        }
-
-        [HttpGet("/AvailableProjects")]
-        public IActionResult AvailableProjects()
-        {
-            var temp = searchService.AvailableProjects();
             return Ok(temp);
         }
 
@@ -57,12 +51,14 @@ namespace CrowDo.Controllers
             var temp = searchService.FundedProjects();
             return Ok(temp);
         }
+
         [HttpGet("/RecentProjects")]
         public IActionResult RecentProjects()
         {
             var temp = searchService.RecentProjects();
             return Ok(temp);
         }
+
         [HttpGet("/MostVisitedProjects")]
         public IActionResult MostVisitedProjects()
         {
@@ -74,18 +70,19 @@ namespace CrowDo.Controllers
         public IActionResult LastWeekProjects()
         {
             var temp = searchService.LastWeekProjects();
-            //here i have to call the excel serializer
+            serializer.SaveToFile("LastWeekProjects", temp.Data);
             return Ok(temp);
         }
+
         [HttpGet("/LastMonthProjects")]
         public IActionResult LastMonthProjects()
         {
             var temp = searchService.LastMonthProjects();
-            //here i have to call the excel serializer
+            serializer.SaveToFile("LastMonthProjects", temp.Data);
             return Ok(temp);
         }
 
-        [HttpGet("/ProjectByCategorys/{id}")]
+        [HttpGet("/ProjectByCategory/{id}")]
         public IActionResult ProjectByCategorys(int id)
         {
             var temp = searchService.ProjectByCategory(id);
@@ -98,6 +95,7 @@ namespace CrowDo.Controllers
             var temp = searchService.AlmostExpireProjects();
             return Ok(temp);
         }
+
         [HttpGet("/MostFunded")]
         public IActionResult MostFunded()
         {

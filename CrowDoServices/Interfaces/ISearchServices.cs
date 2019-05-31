@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CrowDoServices.Interfaces
 {
@@ -10,7 +11,7 @@ namespace CrowDoServices.Interfaces
         //main search
         Result<List<ProjectViewModel>> SearchProjects(string q);        
         Result<Project> SearchPoject(string title);
-        Result<List<Project>> AvailableProjects();
+        Task<Result<List<Project>>> AvailableProjects();
         Result<List<Project>> FundedProjects();
         Result<List<Project>> RecentProjects();
         Result<List<Project>> MostVisitedProjects();
