@@ -22,25 +22,10 @@ namespace CrowDo.Controllers
         }
 
 
-
-        //[HttpGet("/ProjectComments/{ProjectId}")]
-        //public IActionResult ProjectComments(int ProjectId)
-        //{
-        //    var temp = projectService.ProjectComments(ProjectId);
-        //    return Ok(temp);
-        //}
-        ////>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-        [HttpGet("/Search")]
+        [HttpGet("/SearchByText")]
         public IActionResult Search(string q)
         {
             var temp = searchService.SearchProjects(q);
-            return Ok(temp);
-        }
-
-        [HttpGet("/TopCreators/{number}")]
-        public IActionResult Search(int number)
-        {
-            var temp = searchService.TopProjectCreators(number);
             return Ok(temp);
         }
 
@@ -50,6 +35,12 @@ namespace CrowDo.Controllers
             var temp = searchService.AvailableProjects();
             return Ok(temp);
         }
+        [HttpGet("/TopCreators/{number}")]
+        public IActionResult Search(int number)
+        {
+            var temp = searchService.TopProjectCreators(number);
+            return Ok(temp);
+        }
 
         [HttpGet("/FundedProjects")]
         public IActionResult FundedProjects()
@@ -57,12 +48,14 @@ namespace CrowDo.Controllers
             var temp = searchService.FundedProjects();
             return Ok(temp);
         }
+
         [HttpGet("/RecentProjects")]
         public IActionResult RecentProjects()
         {
             var temp = searchService.RecentProjects();
             return Ok(temp);
         }
+
         [HttpGet("/MostVisitedProjects")]
         public IActionResult MostVisitedProjects()
         {
@@ -77,6 +70,7 @@ namespace CrowDo.Controllers
             //here i have to call the excel serializer
             return Ok(temp);
         }
+
         [HttpGet("/LastMonthProjects")]
         public IActionResult LastMonthProjects()
         {
@@ -85,7 +79,7 @@ namespace CrowDo.Controllers
             return Ok(temp);
         }
 
-        [HttpGet("/ProjectByCategorys/{id}")]
+        [HttpGet("/ProjectByCategory/{id}")]
         public IActionResult ProjectByCategorys(int id)
         {
             var temp = searchService.ProjectByCategory(id);
@@ -98,6 +92,7 @@ namespace CrowDo.Controllers
             var temp = searchService.AlmostExpireProjects();
             return Ok(temp);
         }
+
         [HttpGet("/MostFunded")]
         public IActionResult MostFunded()
         {

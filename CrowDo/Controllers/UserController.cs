@@ -48,13 +48,23 @@ namespace CrowDo.Controllers
                 , temp.Country, temp.State, temp.ZipCode, temp.DateOfBirth);
         }
 
+
+        [HttpPost("/BackAProject/{PledgeId}/email/{email}")]
+        public IActionResult BackAProject(int PledgeId, string email)
+        {
+            var result = userService.CreatePledge(email, PledgeId);
+            return Ok(result);
+        }
+
+
+
+        /*-------------------------------------------------------Delete------------------------------------------------------------------*/
         [HttpPut("/DeleteUser/{email}")]
         public IActionResult UserDelete(string email)
         {
             var result = userService.UserDelete(email);
             return Ok(result);
         }
-
         [HttpPut("/UpdateUser/{email}")]
         public IActionResult UserUpdate(string email, [FromBody] NewUser temp)
         {
@@ -62,7 +72,6 @@ namespace CrowDo.Controllers
                 , temp.Country, temp.State, temp.ZipCode, temp.DateOfBirth, temp.Email);
             return Ok(result);
         }
-
         [HttpGet("/MyPledges{email}")]
         public IActionResult MyPledges(string email)
         {
@@ -74,12 +83,6 @@ namespace CrowDo.Controllers
         public IActionResult UserComments(string email)
         {
             var result = userService.UserComments(email);
-            return Ok(result);
-        }
-        [HttpPost("/BackAProject/{PledgeId}/email/{email}")]
-        public IActionResult BackAProject(int PledgeId, string email)
-        {
-            var result = userService.CreatePledge(email, PledgeId);
             return Ok(result);
         }
 
