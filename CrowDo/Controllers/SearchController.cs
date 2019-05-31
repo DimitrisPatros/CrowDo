@@ -67,7 +67,7 @@ namespace CrowDo.Controllers
         public IActionResult LastWeekProjects()
         {
             var temp = searchService.LastWeekProjects();
-            //here i have to call the excel serializer
+            serializer.SaveToFile("LastWeekProjects", temp.Data);
             return Ok(temp);
         }
 
@@ -75,7 +75,7 @@ namespace CrowDo.Controllers
         public IActionResult LastMonthProjects()
         {
             var temp = searchService.LastMonthProjects();
-            //here i have to call the excel serializer
+            serializer.SaveToFile("LastMonthProjects", temp.Data);
             return Ok(temp);
         }
 

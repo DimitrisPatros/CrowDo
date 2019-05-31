@@ -14,7 +14,7 @@ namespace CrowDoServices
 
         public List<Project> projects = new List<Project>();
 
-        public bool SaveToFile(string fileName, List<Project> project)
+        public bool SaveToFile(string fileName, List<Project> projects)
         {
             XSSFWorkbook wb = new XSSFWorkbook();
             NPOI.SS.UserModel.ISheet sheet = wb.CreateSheet("My Sheet");
@@ -29,9 +29,9 @@ namespace CrowDoServices
             row.CreateCell(6).SetCellValue("Success");
             row.CreateCell(7).SetCellValue("Views");
             row.CreateCell(8).SetCellValue("CreationDate");
-            row.CreateCell(9).SetCellValue("NumbeOfComments");
-            row.CreateCell(10).SetCellValue("NumberOfProjectInfo");
-            row.CreateCell(11).SetCellValue("NumberOfPledgeOpitons");
+           // row.CreateCell(9).SetCellValue("NumbeOfComments");
+           // row.CreateCell(9).SetCellValue("NumberOfProjectInfo");
+           // row.CreateCell(10).SetCellValue("NumberOfPledgeOpitons");
 
             for (int i = 0; i < projects.Count; i++)
             {
@@ -45,9 +45,9 @@ namespace CrowDoServices
                 row.CreateCell(6).SetCellValue(projects[i].ProjectSuccess);
                 row.CreateCell(7).SetCellValue(projects[i].ProjectViews);
                 row.CreateCell(8).SetCellValue(projects[i].CreationDate);
-                row.CreateCell(9).SetCellValue(projects[i].comments.Count);
-                row.CreateCell(10).SetCellValue(projects[i].ProjectInfo.Count);
-                row.CreateCell(11).SetCellValue(projects[i].PledgeOptions.Count);
+               // row.CreateCell(9).SetCellValue(projects[i].comments.Count);
+               // row.CreateCell(9).SetCellValue(projects[i].ProjectInfo.Count);
+               // row.CreateCell(10).SetCellValue(projects[i].PledgeOptions.Count);
             }
 
 
