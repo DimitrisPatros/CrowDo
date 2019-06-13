@@ -6,8 +6,8 @@ using CrowDoServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using CrowDoServices.Services;
 using CrowDoServices;
-using CrowDoServices.Models;
 using System.ComponentModel.DataAnnotations;
+using DatabaseContext.Models;
 
 namespace CrowDo.Controllers
 {

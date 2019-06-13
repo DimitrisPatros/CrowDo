@@ -1,11 +1,11 @@
 ﻿using CrowDoServices.Interfaces;
-using CrowDoServices.Models;
+using CrowDoServices.ViewModels;
+using DatabaseContext;
+using DatabaseContext.Models;
 using Microsoft.EntityFrameworkCore;
-using NPOI.XSSF.UserModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CrowDoServices.Services
@@ -52,7 +52,7 @@ namespace CrowDoServices.Services
         public async Task<Result<List<Project>>> AvailableProjects()
         {
 
-            var result = new  Result<List<Project>>();
+            var result = new Result<List<Project>>();
             result.Data = await context.Set<Project>().Where(ap => ap.ProjectStatus == true).ToListAsync();
 
             if (result.Data.Count == 0)
@@ -200,7 +200,7 @@ namespace CrowDoServices.Services
             if (result.Data == null || !result.Data.Any())
             {
                 result.ErrorCode = 0;
-                result.ErrorText = "Not found";                
+                result.ErrorText = "Not found";
             }
             return result;
         }
