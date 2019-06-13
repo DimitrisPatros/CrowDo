@@ -4,35 +4,38 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using DatabaseContext;
+using DatabaseContext.SeedData;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace CrowDo
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var a = CreateWebHostBuilder(args).Build();
-            //_context.Database.EnsureCreated();
-            using (IServiceScope scope = a.Services.CreateScope())
-            {
-                Init(scope.ServiceProvider);
-            }
-            a.Run();
-        }
+namespace CrowDo {
+	public class Program {
+		public static async Task Main(string[] args) {
+			var host = CreateWebHostBuilder(args).Build();
+			
+			using (var scope = host.Services.CreateScope()) {
+				await EnsureDataStorageIsReady(scope.ServiceProvider);
+			}
 
-        private static void Init(IServiceProvider serviceProvider)
-        {
-            CrowDoDbContext a = serviceProvider.GetRequiredService<CrowDoDbContext>();
-            a.Database.EnsureCreated();            
-        }
+			host.Run();
+		}
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
-    }
+		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+			WebHost.CreateDefaultBuilder(args)
+				.UseStartup<Startup>()
+				.ConfigureAppConfiguration((hostContext, config) => {
+					config.SetBasePath(hostContext.HostingEnvironment.ContentRootPath);
+					config.AddEnvironmentVariables();
+					config.AddJsonFile("appsettings.json");
+					config.AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", true);
+				});
+
+		private static async Task EnsureDataStorageIsReady(IServiceProvider services) {
+			await CoreEFStartup.InitializeDatabaseAsync(services);
+			await SimpleContentEFStartup.InitializeDatabaseAsync(services);
+		}
+	}
 }
