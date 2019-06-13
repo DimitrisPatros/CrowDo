@@ -85,7 +85,7 @@ namespace CrowDo.Controllers
         //    return Ok(result);
         //}
 
-        //public struct NEwProject
+        //public struct NewProject
         //{
         //    public string Email { get; set; }
         //    public string ProjectTitle { get; set; }
@@ -93,7 +93,7 @@ namespace CrowDo.Controllers
         //}
 
         //[HttpPost("/ CreateProject")]
-        //public IActionResult CreateProject(NEwProject project)
+        //public IActionResult CreateProject(NewProject project)
         //{
         //    var temp = projectService.CreateProject(project.Email, project.ProjectTitle, project.FundingBudjet);
         //    return Ok(temp);
@@ -136,7 +136,7 @@ namespace CrowDo.Controllers
         //}
 
 
-        //public struct NEwPledgeOptionToProject
+        //public struct NewPledgeOptionToProject
         //{
         //    public string Email { get; set; }
         //    public int ProjectId { get; set; }
@@ -148,7 +148,7 @@ namespace CrowDo.Controllers
         //    public string Descritpion { get; set; }
         //}
         //[HttpPost("/ AddPledgeOptionToProject")]
-        //public IActionResult AddPledgeOptionToProject([FromBody] NEwPledgeOptionToProject npo)
+        //public IActionResult AddPledgeOptionToProject([FromBody] NewPledgeOptionToProject npo)
         //{
         //    var temp = projectService.AddPledgeOptionToProject(npo.Email, npo.ProjectId,
         //    npo.TitleOfPledge, npo.PriceOfPledge, npo.EstimateDelivery,
@@ -224,7 +224,7 @@ namespace CrowDo.Controllers
 
 
         //[HttpPut("/ UpdateProject/{ProjectId}/status{status}")]
-        //public IActionResult UpdateProject(int ProjectId, bool status, [FromBody] NEwProject project)
+        //public IActionResult UpdateProject(int ProjectId, bool status, [FromBody] NewProject project)
         //{
         //    var temp = projectService.UpdateProject(project.Email, ProjectId, project.ProjectTitle, status);
         //    return Ok(temp);
