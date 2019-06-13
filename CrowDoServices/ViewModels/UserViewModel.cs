@@ -1,8 +1,9 @@
-﻿using System;
+﻿using DatabaseContext.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace CrowDoServices.Models
+namespace CrowDoServices.ViewModels
 {
     public class UserViewModel
     {

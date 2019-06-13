@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DatabaseContext.Models;
 using Microsoft.EntityFrameworkCore;
-using CrowDoServices.Models;
 
-namespace CrowDoServices
+namespace DatabaseContext
 {
     public class CrowDoDbContext : DbContext
     {
-        public CrowDoDbContext(DbContextOptions<CrowDoDbContext> options)
-           : base(options)
-        {
-
-        }
+        public CrowDoDbContext(DbContextOptions<CrowDoDbContext> options) : base(options) { }
         public CrowDoDbContext()
         {
-        }
 
+        }
         public DbSet<User> Users { get; set; }
         public DbSet<Category> Category { get; set; }
         public DbSet<Comment> Comments { get; set; }

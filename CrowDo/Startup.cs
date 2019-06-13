@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CrowDoServices;
 using CrowDoServices.Interfaces;
 using CrowDoServices.Services;
+using DatabaseContext;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,8 +29,7 @@ namespace CrowDo
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<CrowDoDbContext>(options =>options
-            .UseSqlServer(@"Server=localhost;Database=CrowDoDataBase; Trusted_Connection = True; ConnectRetryCount = 0;"));
+            services.AddDbContext<CrowDoDbContext>(options =>options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddScoped<IProjectServices, ProjectServices>();
             services.AddScoped<IUserServices, UserServices>();
@@ -51,5 +51,6 @@ namespace CrowDo
             app.UseSwaggerUi3();
             app.UseMvc();
         }
+        
     }
 }

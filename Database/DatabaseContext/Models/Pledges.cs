@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CrowDoServices.Models
+namespace DatabaseContext.Models
 {
     public class Pledges
     {

@@ -1,5 +1,6 @@
 ﻿using CrowDoServices.Interfaces;
-using CrowDoServices.Models;
+using DatabaseContext;
+using DatabaseContext.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

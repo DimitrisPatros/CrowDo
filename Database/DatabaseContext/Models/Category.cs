@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace CrowDoServices.Models
+namespace DatabaseContext.Models
 {
     public class Category
     {

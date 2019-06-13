@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace CrowDoServices.Migrations
+namespace DatabaseContext.Migrations
 {
     public partial class Initial : Migration
     {

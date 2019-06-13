@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 
-namespace CrowDoServices.Models
+namespace DatabaseContext.Models
 {
     public class Project
     {

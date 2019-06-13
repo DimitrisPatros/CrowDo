@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace CrowDoServices.Models
+namespace DatabaseContext.Models
 {
     public class User
     {
